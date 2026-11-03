@@ -23,6 +23,7 @@ import { createRequest, options, approvals, reviewRequest } from './requests';
 import { today, checkIn, checkOut } from './attendance';
 import { history, detail, correct, positiveId } from './history';
 import { team, member } from './team';
+import { calendarMonth } from './calendar';
 import { setClock } from './demo';
 @Catch()
 class ErrorFilter implements ExceptionFilter {
@@ -83,6 +84,11 @@ class ApiController {
   @Post('attendance/:id/correct') correct(@Req() req: Request) {
     return gateway(this.platform, req, 'ATTENDANCE_CORRECT', (c) =>
       correct(c, this.platform.calendar, positiveId(req.params.id), req.body?.checkOut),
+    );
+  }
+  @Get('calendar') calendar(@Req() req: Request) {
+    return gateway(this.platform, req, 'CALENDAR', (c) =>
+      calendarMonth(c, this.platform.calendar, req.query),
     );
   }
   @Get('today') today(@Req() req: Request) {
