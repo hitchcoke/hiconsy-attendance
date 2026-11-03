@@ -23,6 +23,9 @@
 | [T16](T16.md) 실행 환경 | T13 | scripts/dev.mjs, README | Node 21 오류 안내·Node 24 실행 확인 |
 | [T17](T17.md) 휴가 승인 | T15/T16 | 서버 승인·원장·DB, 신청/승인 UI | 승인 대기·승인·반려·잔여 반환·재신청 |
 | [T18](T18.md) 버그 회귀·문서 | T17 | 세션·화면 상태, UI 테스트, docs/testing.md | 오류 재현·수정, 서버 32개·Electron 16개, README 연결 |
+| [T19](T19.md) 캘린더 API | T18 | calendar.ts, 공통 계약, 서버 테스트 | 월별 근태·신청·공휴일·신청 가능 여부, 본인/리드 권한 |
+| [T20](T20.md) 캘린더 UI | T19 | Calendar.vue, 메뉴·라우터·Requests.vue | 월 이동·날짜 상세·팀원 선택·날짜 전달·신청 후 복귀 |
+| [T21](T21.md) 캘린더 회귀·문서 | T20 | scripts/calendar-smoke.mjs, 문서·캡처 | 오류·월 경계·작은 창·신청/승인 왕복 검증, 제출 문서 |
 
 파일 표의 `pages/`와 `components/`는 `src/ui/` 아래다. 정확한 변경 목록은 [Git 이력](../history.md)과 커밋 diff를 확인한다. T06/T07은 오늘 화면에 필요한 잔여·신청 계약을 먼저 연결하기 위해 T04보다 먼저 구현했다. 요청 변경 T15는 T12 이후, 패키징 전에 진행했다.
 

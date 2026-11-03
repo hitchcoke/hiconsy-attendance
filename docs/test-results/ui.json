@@ -24,7 +24,7 @@
     "os": "macOS arm64",
     "node": "24.22.2",
     "electron": "45.2.1",
-    "apiPort": 3101,
+    "apiPort": 3103,
     "renderer": "Vite production build in Electron"
   }
 }
