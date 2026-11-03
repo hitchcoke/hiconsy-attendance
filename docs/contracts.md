@@ -62,3 +62,11 @@ GET /team/:id?from&to → 리드 전용 팀원 근태/신청/이력.
 - Balances.pendingDays, approvedDays 추가. reservedDays는 두 값의 합계이며 반려분 제외. annual은 예약을 제외한 신청 가능 잔여.
 - 반려 반환은 balance_entries에 양수 행으로 추가하되 grantId를 원래 지급 행으로 연결하고 sourceKey=release:requestId:grantId로 중복 방지. 양수 중 grantId가 없는 행만 지급 원본이다.
 - 신청·예약, 심사·반환·이력은 각각 한 트랜잭션으로 처리한다. 출퇴근/IP 판단은 APPROVED만 사용한다.
+
+## T19 월별 조회 계약
+- GET /calendar?month=YYYY-MM&userId=양의정수. 생략 시 서버 현재 월·본인. 팀원의 타인 조회는 403, 리드의 없는 사용자 조회는 404, 잘못된 월은 INVALID_MONTH(400), 2026년 밖은 CALENDAR_UNSUPPORTED(400).
+- CalendarMonth: month, today(KST), user(선택 사용자), users(선택 가능한 공개 사용자 목록), minMonth/maxMonth, days.
+- CalendarDay: date, weekday(일=0), business, holidayName, attendance|null, attendanceState(NONE/WORKING/MISSING_CHECKOUT/COMPLETED), requests(신청 이력 전체, 최신 ID 순), deadline(UTC ISO), canRequest(ActionState).
+- 날짜 범위는 월 첫날~말일 포함. 인접 월 기록은 반환하지 않는다. 달력은 출퇴근·신청 테이블을 읽으며 새로운 일정 테이블이나 복사본은 만들지 않는다.
+- canRequest는 날짜·본인·마감·입사일·중복 조건이다. 종류별 잔여와 입력은 기존 신청 API가 최종 검증한다. 금액·근무 판정을 프론트에서 다시 계산하지 않는다.
+- /requests?date=YYYY-MM-DD&kind=ANNUAL|HOLIDAY&from=calendar는 폼을 열기 위한 화면 경로다. 저장 API는 기존 POST /requests를 사용한다.

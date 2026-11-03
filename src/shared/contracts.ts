@@ -129,3 +129,23 @@ export interface RequestOptions {
   deadline: string;
   open: boolean;
 }
+export interface CalendarDay {
+  date: string;
+  weekday: number;
+  business: boolean;
+  holidayName: string | null;
+  attendance: Attendance | null;
+  attendanceState: 'NONE' | 'WORKING' | 'MISSING_CHECKOUT' | 'COMPLETED';
+  requests: WorkRequest[];
+  deadline: string;
+  canRequest: ActionState;
+}
+export interface CalendarMonth {
+  month: string;
+  today: string;
+  user: User;
+  users: User[];
+  minMonth: string;
+  maxMonth: string;
+  days: CalendarDay[];
+}
