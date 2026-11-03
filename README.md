@@ -17,6 +17,15 @@ npm run dev
 
 `nvm`을 사용하지 않는다면 Node.js 24를 설치한 뒤 `npm ci`부터 실행합니다. Electron 바이너리는 설치 시 내려받습니다.
 
+현재 Node 버전이 다르거나 `nvm`이 없다면 다음 명령으로 이 프로젝트에 필요한 버전을 사용합니다. 첫 실행에는 런타임을 내려받으며, 시스템 기본 Node 버전은 변경하지 않습니다.
+
+```sh
+npx --yes --package=node@24 --package=npm@10.9.4 -- npm ci
+npx --yes --package=node@24 --package=npm@10.9.4 -- npm run dev
+```
+
+이미 의존성을 설치했다면 두 번째 명령만 실행하면 됩니다. `crypto.hash is not a function`은 지원하지 않는 Node 버전으로 Vite를 시작했을 때 발생할 수 있습니다. `node -v`로 현재 버전을 확인하세요. 개발 실행 스크립트도 시작 전에 버전을 검사합니다.
+
 `npm run dev`는 NestJS(3000), Vite(5173), Electron을 함께 시작합니다. 최초 실행 시 DB와 샘플 계정이 생성됩니다. 시연 시각은 **2026-03-12 09:00 KST**이며 변경한 시각은 재실행 후에도 유지됩니다. 포트가 이미 사용 중이면 기존 프로세스를 종료해야 합니다.
 
 | 계정 | 이름 | 역할 | 입사일 |

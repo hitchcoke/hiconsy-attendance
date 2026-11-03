@@ -1,6 +1,15 @@
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { createRequire } from 'node:module';
+const [nodeMajor, nodeMinor] = process.versions.node.split('.').map(Number);
+if (nodeMajor !== 24 || nodeMinor < 11) {
+  console.error(
+    `현재 Node.js ${process.version}입니다. 이 프로젝트는 Node.js 24.11 이상(24.x)이 필요합니다.\n` +
+      '다음 명령으로 실행해 주세요:\n' +
+      'npx --yes --package=node@24 --package=npm@10.9.4 -- npm run dev',
+  );
+  process.exit(1);
+}
 const require = createRequire(import.meta.url),
   children = [];
 let stopping = false;
