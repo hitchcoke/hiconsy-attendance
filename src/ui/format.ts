@@ -38,6 +38,7 @@ export const actionLabel: Record<string, string> = {
   APPROVAL_LIST: '휴가 승인 목록 조회',
   REQUEST_OPTIONS: '신청 가능 여부 확인',
   TODAY: '오늘 현황 조회',
+  CALENDAR: '월별 캘린더 조회',
   ATTENDANCE_CHECK_IN: '출근 등록',
   ATTENDANCE_CHECK_OUT: '퇴근 등록',
   ATTENDANCE_CORRECT: '퇴근 직접 입력',

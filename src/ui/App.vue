@@ -12,6 +12,7 @@ const session = useSession(),
   refreshKey = ref(0);
 const menu = computed(() => [
   { path: '/today', label: '오늘', icon: House },
+  { path: '/calendar', label: '캘린더', icon: Calendar },
   { path: '/requests', label: '신청', icon: Calendar },
   { path: '/history', label: '내 근태', icon: Document },
   ...(session.user?.role === 'LEAD'
