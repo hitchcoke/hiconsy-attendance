@@ -139,6 +139,7 @@ onMounted(load);
   <el-dialog
     v-model="dialog"
     title="휴가 신청 검토"
+    align-center
     width="520px"
     :close-on-click-modal="!busy"
     :close-on-press-escape="!busy"
@@ -171,6 +172,7 @@ onMounted(load);
         <el-input
           id="review-note"
           v-model="reason"
+          @input="formError = ''"
           type="textarea"
           :rows="3"
           maxlength="500"

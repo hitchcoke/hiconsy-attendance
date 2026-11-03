@@ -18,7 +18,9 @@ const working = computed(
     () => data.value?.rows.filter((r) => r.attendance && !r.attendance.checkOut).length || 0,
   ),
   late = computed(() => data.value?.rows.filter((r) => r.attendance?.late).length || 0);
+let loadSequence = 0;
 async function load() {
+  const current = ++loadSequence;
   loading.value = true;
   error.value = '';
   try {
@@ -26,11 +28,12 @@ async function load() {
       const c = await api<ClockInfo>('/clock');
       date.value = new Date(new Date(c.now).getTime() + 9 * 3600000).toISOString().slice(0, 10);
     }
-    data.value = await api<TeamData>(`/team?date=${date.value}`);
+    const result = await api<TeamData>(`/team?date=${date.value}`);
+    if (current === loadSequence) data.value = result;
   } catch (e) {
-    error.value = (e as Error).message;
+    if (current === loadSequence) error.value = (e as Error).message;
   } finally {
-    loading.value = false;
+    if (current === loadSequence) loading.value = false;
   }
 }
 async function show(id: number) {
@@ -71,10 +74,10 @@ onMounted(load);
       <span>전체 팀원</span><strong>{{ data.rows.length }}<small>명</small></strong>
     </div>
     <div>
-      <span>현재 근무 중</span><strong class="green-text">{{ working }}<small>명</small></strong>
+      <span>선택일 근무 중</span><strong class="green-text">{{ working }}<small>명</small></strong>
     </div>
     <div>
-      <span>오늘 지각</span><strong class="amber-text">{{ late }}<small>명</small></strong>
+      <span>선택일 지각</span><strong class="amber-text">{{ late }}<small>명</small></strong>
     </div>
     <div>
       <span>퇴근 미기록</span><strong>{{ data.missing.length }}<small>건</small></strong>

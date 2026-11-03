@@ -13,6 +13,7 @@ const session = useSession(),
   loading = ref(false),
   from = ref(''),
   to = ref(''),
+  today = ref(''),
   selected = ref<Attendance>(),
   checkout = ref('18:00'),
   correcting = ref(false),
@@ -30,6 +31,7 @@ async function load() {
       from.value = t.date.slice(0, 7) + '-01';
       to.value = t.date;
     }
+    today.value = t.date;
     missing.value = t.missing;
     rows.value = await api<Attendance[]>(`/attendance?from=${from.value}&to=${to.value}`);
   } catch (e) {
@@ -120,14 +122,16 @@ onMounted(load);
         ><template #default="{ row }">{{ time(row.checkOut) }}</template></el-table-column
       ><el-table-column label="근무시간" min-width="115"
         ><template #default="{ row }">{{
-          row.checkOut ? hours(row.workSeconds) : '미기록'
+          row.checkOut ? hours(row.workSeconds) : row.workDate === today ? '근무 중' : '미기록'
         }}</template></el-table-column
       ><el-table-column label="상태" min-width="160"
         ><template #default="{ row }"
           ><span v-if="row.late" class="tag orange">지각</span>
           <span v-if="row.early" class="tag orange">조퇴</span>
           <span v-if="row.manual" class="tag blue">직접 입력</span
-          ><span v-if="!row.checkOut" class="tag">퇴근 미기록</span
+          ><span v-if="!row.checkOut" class="tag">{{
+            row.workDate === today ? '근무 중' : '퇴근 미기록'
+          }}</span
           ><span v-if="row.checkOut && !row.late && !row.early" class="tag green"
             >정상</span
           ></template

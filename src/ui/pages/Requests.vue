@@ -70,8 +70,8 @@ watch(
     const current = ++seq;
     opt.value = undefined;
     optError.value = '';
+    optLoading.value = !!date;
     if (!date) return;
-    optLoading.value = true;
     try {
       const result = await api<RequestOptions>(`/request-options?date=${date}`);
       if (current === seq) opt.value = result;
