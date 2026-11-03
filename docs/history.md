@@ -1,6 +1,6 @@
 # Git 작업 이력
 
-기준: [dcd24f1](https://github.com/hitchcoke/hiconsy-attendance/commit/dcd24f1dc69095a6880992580b0c1cd323a8bd21). 실제 Git에서 생성한 스냅샷이며, 이 문서를 저장하는 후속 커밋은 다음 생성 때 포함된다.
+기준: [d8bd1d2](https://github.com/hitchcoke/hiconsy-attendance/commit/d8bd1d2250d82bd06c3e9c125eeec35689d475c0). 실제 Git에서 생성한 스냅샷이며, 이 문서를 저장하는 후속 커밋은 다음 생성 때 포함된다.
 
 `npm run history:export`로 main의 이력을 다시 추출한다. task 브랜치는 삭제하지 않고 유지한다.
 
@@ -20,12 +20,16 @@
 | [T11](tasks/T11.md) | task/T11-demo | [1f21f95](https://github.com/hitchcoke/hiconsy-attendance/commit/1f21f95c2f067d7d6bd68e8e65bc49d4b070a9d1) | [002c149](https://github.com/hitchcoke/hiconsy-attendance/commit/002c1493c91b190f810bda835460b6a6e08d2975) |
 | [T12](tasks/T12.md) | task/T12-ui-qa | [0c7a4cb](https://github.com/hitchcoke/hiconsy-attendance/commit/0c7a4cb1289e2bf72c619f96706a6e9f16b0aaba) | [ebc3956](https://github.com/hitchcoke/hiconsy-attendance/commit/ebc3956e9cc58cd2df4fe1e52d1d907020ceb8be) |
 | [T13](tasks/T13.md) | task/T13-packaging | [b93f987](https://github.com/hitchcoke/hiconsy-attendance/commit/b93f987927a5f5ac215b3bebfd4471148d4277c9) | [dcd24f1](https://github.com/hitchcoke/hiconsy-attendance/commit/dcd24f1dc69095a6880992580b0c1cd323a8bd21) |
-| [T14](tasks/T14.md) | task/T14-submission | — | — |
+| [T14](tasks/T14.md) | task/T14-submission | [590471b](https://github.com/hitchcoke/hiconsy-attendance/commit/590471b9ee03728e6bc4bd4911f9831ede1e6458) | [d8bd1d2](https://github.com/hitchcoke/hiconsy-attendance/commit/d8bd1d2250d82bd06c3e9c125eeec35689d475c0) |
 | [T15](tasks/T15.md) | task/T15-half-day | [99bdf64](https://github.com/hitchcoke/hiconsy-attendance/commit/99bdf6452aa205b01f2b1f415e3121f95df79132), [2e15cd6](https://github.com/hitchcoke/hiconsy-attendance/commit/2e15cd68a63fc65a69b0c42ba50494f81dff4888) | [a5f6a2c](https://github.com/hitchcoke/hiconsy-attendance/commit/a5f6a2c9f28e423acf97c9502465001523880976) |
 
 ## 그래프
 
 ```text
+*   d8bd1d2 merge(T14): submission documentation and validation workflow
+|\  
+| * 590471b docs(T14): document execution, verification and task history
+|/  
 *   dcd24f1 merge(T13): verified macOS package and lifecycle
 |\  
 | * b93f987 feat(T13): package macOS app and verify restart recovery
