@@ -1,2 +1,40 @@
-import {test} from 'node:test';import assert from 'node:assert/strict';import request from 'supertest';import {createApp} from '../app';import {Settings} from '../db';
-test('missing checkout blocks next day; owner-only correction restores attendance',async()=>{const a=await createApp({path:':memory:',demo:true});try{const http=request(a.app.getHttpServer());const login=async(login:string)=>(await http.post('/api/auth/login').send({login,password:'demo1234'})).body.token;const kim=await login('kim'),yeon=await login('yeon');const check=()=>http.post('/api/attendance/check-in').auth(kim,{type:'bearer'}).send({});const first=await check().expect(201);await a.db.manager.update(Settings,{key:'demoNow'},{value:'2026-03-13T00:00:00Z'});assert.equal((await check()).body.code,'MISSING_CHECKOUT');await http.get(`/api/attendance/${first.body.id}`).auth(yeon,{type:'bearer'}).expect(404);const correct=(token:string,time:string)=>http.post(`/api/attendance/${first.body.id}/correct`).auth(token,{type:'bearer'}).send({checkOut:time});await correct(yeon,'2026-03-12T18:00:00+09:00').expect(404);await correct(kim,'2026-03-13T18:00:00+09:00').expect(400);const r=await correct(kim,'2026-03-12T18:00:00+09:00').expect(201);assert.equal(r.body.manual,true);assert.equal(r.body.workSeconds,28800);await correct(kim,'2026-03-12T18:00:00+09:00').expect(409);await check().expect(201);const detail=await http.get(`/api/attendance/${first.body.id}`).auth(kim,{type:'bearer'}).expect(200);assert.ok(detail.body.logs.some((x:any)=>x.action==='ATTENDANCE_CORRECT'));}finally{await a.close();}});
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import request from 'supertest';
+import { createApp } from '../app';
+import { Settings } from '../db';
+test('missing checkout blocks next day; owner-only correction restores attendance', async () => {
+  const a = await createApp({ path: ':memory:', demo: true });
+  try {
+    const http = request(a.app.getHttpServer());
+    const login = async (login: string) =>
+      (await http.post('/api/auth/login').send({ login, password: 'demo1234' })).body.token;
+    const kim = await login('kim'),
+      yeon = await login('yeon');
+    const check = () =>
+      http.post('/api/attendance/check-in').auth(kim, { type: 'bearer' }).send({});
+    const first = await check().expect(201);
+    await a.db.manager.update(Settings, { key: 'demoNow' }, { value: '2026-03-13T00:00:00Z' });
+    assert.equal((await check()).body.code, 'MISSING_CHECKOUT');
+    await http.get(`/api/attendance/${first.body.id}`).auth(yeon, { type: 'bearer' }).expect(404);
+    const correct = (token: string, time: string) =>
+      http
+        .post(`/api/attendance/${first.body.id}/correct`)
+        .auth(token, { type: 'bearer' })
+        .send({ checkOut: time });
+    await correct(yeon, '2026-03-12T18:00:00+09:00').expect(404);
+    await correct(kim, '2026-03-13T18:00:00+09:00').expect(400);
+    const r = await correct(kim, '2026-03-12T18:00:00+09:00').expect(201);
+    assert.equal(r.body.manual, true);
+    assert.equal(r.body.workSeconds, 28800);
+    await correct(kim, '2026-03-12T18:00:00+09:00').expect(409);
+    await check().expect(201);
+    const detail = await http
+      .get(`/api/attendance/${first.body.id}`)
+      .auth(kim, { type: 'bearer' })
+      .expect(200);
+    assert.ok(detail.body.logs.some((x: any) => x.action === 'ATTENDANCE_CORRECT'));
+  } finally {
+    await a.close();
+  }
+});

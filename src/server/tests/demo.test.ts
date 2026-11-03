@@ -1,3 +1,41 @@
-import {test} from 'node:test';import assert from 'node:assert/strict';import request from 'supertest';import {createApp} from '../app';import {Settings} from '../db';
-test('demo clock is lead-only, forward-only and does not expire session',async()=>{const a=await createApp({path:':memory:',demo:true});try{const h=request(a.app.getHttpServer());const login=async(login:string)=>(await h.post('/api/auth/login').send({login,password:'demo1234'})).body.token;const kim=await login('kim'),lead=await login('lead');const set=(token:string,now:string)=>h.post('/api/demo/clock').auth(token,{type:'bearer'}).send({now});await set(kim,'2026-04-01T09:00:00+09:00').expect(403);await set(lead,'2026-04-01T09:00:00+09:00').expect(201);await set(lead,'2026-03-12T09:00:00+09:00').expect(400);await h.get('/api/me').auth(kim,{type:'bearer'}).expect(200);assert.equal((await a.db.manager.findOneByOrFail(Settings,{key:'demoNow'})).value,'2026-04-01T00:00:00.000Z');}finally{await a.close();}});
-test('demo endpoint is disabled in normal mode',async()=>{const a=await createApp({path:':memory:',demo:false});try{const h=request(a.app.getHttpServer());const l=await h.post('/api/auth/login').send({login:'lead',password:'demo1234'});await h.post('/api/demo/clock').auth(l.body.token,{type:'bearer'}).send({now:'2026-12-01T00:00:00+09:00'}).expect(403);}finally{await a.close();}});
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import request from 'supertest';
+import { createApp } from '../app';
+import { Settings } from '../db';
+test('demo clock is lead-only, forward-only and does not expire session', async () => {
+  const a = await createApp({ path: ':memory:', demo: true });
+  try {
+    const h = request(a.app.getHttpServer());
+    const login = async (login: string) =>
+      (await h.post('/api/auth/login').send({ login, password: 'demo1234' })).body.token;
+    const kim = await login('kim'),
+      lead = await login('lead');
+    const set = (token: string, now: string) =>
+      h.post('/api/demo/clock').auth(token, { type: 'bearer' }).send({ now });
+    await set(kim, '2026-04-01T09:00:00+09:00').expect(403);
+    await set(lead, '2026-04-01T09:00:00+09:00').expect(201);
+    await set(lead, '2026-03-12T09:00:00+09:00').expect(400);
+    await h.get('/api/me').auth(kim, { type: 'bearer' }).expect(200);
+    assert.equal(
+      (await a.db.manager.findOneByOrFail(Settings, { key: 'demoNow' })).value,
+      '2026-04-01T00:00:00.000Z',
+    );
+  } finally {
+    await a.close();
+  }
+});
+test('demo endpoint is disabled in normal mode', async () => {
+  const a = await createApp({ path: ':memory:', demo: false });
+  try {
+    const h = request(a.app.getHttpServer());
+    const l = await h.post('/api/auth/login').send({ login: 'lead', password: 'demo1234' });
+    await h
+      .post('/api/demo/clock')
+      .auth(l.body.token, { type: 'bearer' })
+      .send({ now: '2026-12-01T00:00:00+09:00' })
+      .expect(403);
+  } finally {
+    await a.close();
+  }
+});
