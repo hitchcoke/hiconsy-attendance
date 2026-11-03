@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-03T07:13:19.840Z",
+  "generatedAt": "2026-11-03T07:37:42.791Z",
   "repository": "https://github.com/hitchcoke/hiconsy-attendance",
   "ref": "main",
-  "head": "9759e77f521931822cb4f582d7bb44fd1548b2c7",
+  "head": "63923d3f2ec541b4c0151427c21ceaf6431c82f0",
   "tasks": [
     {
       "id": "T00",
@@ -252,14 +252,48 @@
       "branches": [
         {
           "name": "task/T16-runtime-check",
-          "sha": "9759e77f521931822cb4f582d7bb44fd1548b2c7"
+          "sha": "6b84433c1876282309ad2227890323b40281c73c"
         }
       ],
       "commits": [
-        "3966e5a2a2b98741ad671660fb4441b2466d4005"
+        "3966e5a2a2b98741ad671660fb4441b2466d4005",
+        "6b84433c1876282309ad2227890323b40281c73c"
       ],
       "merges": [
-        "9759e77f521931822cb4f582d7bb44fd1548b2c7"
+        "9759e77f521931822cb4f582d7bb44fd1548b2c7",
+        "e5ffc1da72185bf618abaf3c6b4b1946c0a418c6"
+      ]
+    },
+    {
+      "id": "T17",
+      "branches": [
+        {
+          "name": "task/T17-leave-approval",
+          "sha": "54943931ce3811c66ba0c9a866f3dca04e48483a"
+        }
+      ],
+      "commits": [
+        "df729216517a42dbcc506c105ef664bbf919f88c",
+        "54943931ce3811c66ba0c9a866f3dca04e48483a"
+      ],
+      "merges": [
+        "fc7fb5ca78cff7d4513c48ed4fb07a575ac7f56d"
+      ]
+    },
+    {
+      "id": "T18",
+      "branches": [
+        {
+          "name": "task/T18-bug-regression",
+          "sha": "63923d3f2ec541b4c0151427c21ceaf6431c82f0"
+        }
+      ],
+      "commits": [
+        "ca979d180e65ffafd7b68992bea93dcb60c656c0",
+        "dca87a8095260ba9063979e0a8001ebf83aae8d8"
+      ],
+      "merges": [
+        "63923d3f2ec541b4c0151427c21ceaf6431c82f0"
       ]
     }
   ],
@@ -330,7 +364,15 @@
     },
     {
       "name": "task/T16-runtime-check",
-      "sha": "9759e77f521931822cb4f582d7bb44fd1548b2c7"
+      "sha": "6b84433c1876282309ad2227890323b40281c73c"
+    },
+    {
+      "name": "task/T17-leave-approval",
+      "sha": "54943931ce3811c66ba0c9a866f3dca04e48483a"
+    },
+    {
+      "name": "task/T18-bug-regression",
+      "sha": "63923d3f2ec541b4c0151427c21ceaf6431c82f0"
     }
   ],
   "commits": [
@@ -747,6 +789,89 @@
       "author": "hitchcoke",
       "date": "2026-11-03T16:13:19+09:00",
       "subject": "merge(T16): fix local Node version startup guidance",
+      "merge": true
+    },
+    {
+      "sha": "6b84433c1876282309ad2227890323b40281c73c",
+      "parents": [
+        "9759e77f521931822cb4f582d7bb44fd1548b2c7"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:13:19+09:00",
+      "subject": "docs(T16): record runtime fix and merge history",
+      "merge": false
+    },
+    {
+      "sha": "e5ffc1da72185bf618abaf3c6b4b1946c0a418c6",
+      "parents": [
+        "9759e77f521931822cb4f582d7bb44fd1548b2c7",
+        "6b84433c1876282309ad2227890323b40281c73c"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:13:19+09:00",
+      "subject": "merge(T16): publish runtime fix history",
+      "merge": true
+    },
+    {
+      "sha": "df729216517a42dbcc506c105ef664bbf919f88c",
+      "parents": [
+        "e5ffc1da72185bf618abaf3c6b4b1946c0a418c6"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:23:46+09:00",
+      "subject": "feat(T17): add lead leave decisions and transactional reservation refunds",
+      "merge": false
+    },
+    {
+      "sha": "54943931ce3811c66ba0c9a866f3dca04e48483a",
+      "parents": [
+        "df729216517a42dbcc506c105ef664bbf919f88c"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:27:30+09:00",
+      "subject": "feat(T17): add lead approval inbox and applicant decision states",
+      "merge": false
+    },
+    {
+      "sha": "fc7fb5ca78cff7d4513c48ed4fb07a575ac7f56d",
+      "parents": [
+        "e5ffc1da72185bf618abaf3c6b4b1946c0a418c6",
+        "54943931ce3811c66ba0c9a866f3dca04e48483a"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:27:30+09:00",
+      "subject": "merge(T17): team member leave approval workflow",
+      "merge": true
+    },
+    {
+      "sha": "ca979d180e65ffafd7b68992bea93dcb60c656c0",
+      "parents": [
+        "fc7fb5ca78cff7d4513c48ed4fb07a575ac7f56d"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:35:05+09:00",
+      "subject": "fix(T18): correct session recovery and attendance display regressions",
+      "merge": false
+    },
+    {
+      "sha": "dca87a8095260ba9063979e0a8001ebf83aae8d8",
+      "parents": [
+        "ca979d180e65ffafd7b68992bea93dcb60c656c0"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:37:42+09:00",
+      "subject": "docs(T18): publish approval tests, bug reproductions and verification evidence",
+      "merge": false
+    },
+    {
+      "sha": "63923d3f2ec541b4c0151427c21ceaf6431c82f0",
+      "parents": [
+        "fc7fb5ca78cff7d4513c48ed4fb07a575ac7f56d",
+        "dca87a8095260ba9063979e0a8001ebf83aae8d8"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:37:42+09:00",
+      "subject": "merge(T18): tested UI fixes and regression documentation",
       "merge": true
     }
   ]
