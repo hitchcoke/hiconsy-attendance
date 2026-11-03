@@ -28,6 +28,7 @@
     "format": "prettier --write \"src/**/*.{ts,vue,css}\" \"electron/*.cjs\" \"scripts/*.mjs\" \"*.{json,mts,cjs}\"",
     "format:check": "prettier --check \"src/**/*.{ts,vue,css}\" \"electron/*.cjs\" \"scripts/*.mjs\" \"*.{json,mts,cjs}\"",
     "test:ui": "npm run build && node scripts/ui-smoke.mjs",
+    "test:calendar": "npm run build:server && vue-tsc --noEmit -p tsconfig.ui.json && node scripts/calendar-smoke.mjs",
     "history:export": "node scripts/export-history.mjs"
   },
   "devDependencies": {

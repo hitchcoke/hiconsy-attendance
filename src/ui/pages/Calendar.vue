@@ -331,7 +331,9 @@ onUnmounted(() => {
         </article>
         <p v-if="!selected.requests.length" class="detail-empty">신청 내역이 없습니다.</p>
       </section>
-      <section class="day-detail-section">
+    </template>
+    <template v-if="selected && data" #footer>
+      <section class="calendar-apply">
         <h3>새 신청</h3>
         <p class="deadline-text">마감 {{ datetime(selected.deadline) }}</p>
         <p v-if="!selected.canRequest.enabled" class="blocked-reason">
@@ -555,6 +557,14 @@ onUnmounted(() => {
 }
 .day-detail-section h3 {
   margin-bottom: 14px;
+}
+.calendar-apply {
+  border-top: 1px solid #e8edf3;
+  padding-top: 16px;
+  text-align: left;
+}
+.calendar-apply h3 {
+  margin-bottom: 12px;
 }
 .detail-state {
   display: flex;
