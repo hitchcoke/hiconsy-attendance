@@ -9,6 +9,7 @@ import { gateway, loginGateway } from './gateway';
 import { balances } from './balances';
 import { Requests } from './db';
 import { createRequest,options } from './requests';
+import { today,checkIn,checkOut } from './attendance';
 @Catch()
 class ErrorFilter implements ExceptionFilter {
   catch(error:unknown,host:ArgumentsHost) {
@@ -22,6 +23,9 @@ class ApiController {
   constructor(@Inject(Platform) private platform:Platform) {}
   @Post('auth/login') login(@Req() req:Request) {return loginGateway(this.platform,req);}
   @Post('auth/logout') logout(@Req() req:Request) {return gateway(this.platform,req,'LOGOUT',async()=>{this.platform.sessions.delete((req.headers.authorization||'').replace(/^Bearer /,''));return {ok:true};});}
+  @Get('today') today(@Req() req:Request) {return gateway(this.platform,req,'TODAY',c=>today(c,this.platform.calendar,this.platform.demo));}
+  @Post('attendance/check-in') checkIn(@Req() req:Request) {return gateway(this.platform,req,'ATTENDANCE_CHECK_IN',c=>checkIn(c,this.platform.calendar));}
+  @Post('attendance/check-out') checkOut(@Req() req:Request) {return gateway(this.platform,req,'ATTENDANCE_CHECK_OUT',c=>checkOut(c,this.platform.calendar));}
   @Get('requests') requests(@Req() req:Request) {return gateway(this.platform,req,'REQUEST_LIST',c=>c.m.find(Requests,{where:{userId:c.user.id},order:{date:'DESC'}}));}
   @Post('requests') request(@Req() req:Request) {return gateway(this.platform,req,'REQUEST_CREATE',c=>createRequest(c,this.platform.calendar,req.body));}
   @Get('request-options') requestOptions(@Req() req:Request) {return gateway(this.platform,req,'REQUEST_OPTIONS',async c=>options(c,this.platform.calendar,req.query.date));}
