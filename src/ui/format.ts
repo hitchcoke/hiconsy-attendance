@@ -20,7 +20,8 @@ export const hours = (s: number) => `${Math.floor(s / 3600)}시간 ${Math.floor(
 export const kindLabel: Record<string, string> = {
   ANNUAL: '연차',
   REMOTE: '재택근무',
-  OFF: '반일 OFF',
+  HALF_AM: '오전 반차',
+  HALF_PM: '오후 반차',
   HOLIDAY: '휴일 근무',
   OFFICE: '사무실',
 };

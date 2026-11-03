@@ -25,6 +25,15 @@ try {
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   const screenshot = async (name) => {
+    await page.waitForFunction(() => !document.querySelector('.el-message'));
+    await page.evaluate(async () => {
+      await Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => {})),
+      );
+    });
     const bytes = await desktop.evaluate(async ({ BrowserWindow }) => {
       const win = BrowserWindow.getAllWindows()[0];
       return (await win.capturePage()).resize({ width: win.getContentSize()[0] }).toPNG();
@@ -60,6 +69,27 @@ try {
   await page.getByRole('heading', { name: '지급·사용 내역' }).waitFor();
   await page.getByRole('dialog').getByRole('button').first().click();
   checks.push('연차 신청/예약 차감/지급사용 내역');
+  for (const [label, date] of [
+    ['오전 반차 · 0.5일', '2026-03-16'],
+    ['오후 반차 · 0.5일', '2026-03-17'],
+  ]) {
+    await page.getByRole('button', { name: '새 신청', exact: true }).click();
+    await page.getByRole('dialog').getByText(label, { exact: true }).click();
+    assert.equal(await page.getByRole('radio', { name: label, exact: true }).isChecked(), true);
+    await page.locator('#request-date').fill(date);
+    await page.locator('#request-reason').fill(label);
+    await screenshot(label.startsWith('오전') ? 'half-am-form' : 'half-pm-form');
+    await page.getByRole('button', { name: '신청 확정', exact: true }).click();
+    await page.getByRole('cell', { name: date, exact: true }).waitFor();
+    await page.getByRole('dialog').waitFor({ state: 'hidden' });
+  }
+  assert.match(await page.locator('.balance-grid').innerText(), /예약 2일/);
+  assert.match(await page.locator('.balance-card').first().innerText(), /0일/);
+  assert.match(await page.locator('.el-table:visible').innerText(), /오전 반차/);
+  assert.match(await page.locator('.el-table:visible').innerText(), /오후 반차/);
+  await screenshot('requests');
+  checks.push('연차 통합/오전·오후 반차 선택/각 0.5일 차감/점심 기준 표시');
+
   await logout();
   await login('개발 리드 리드 · lead');
   await page.getByRole('link', { name: '팀 현황', exact: true }).click();

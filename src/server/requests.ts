@@ -1,7 +1,7 @@
 import type { Context } from './platform';
 import { Requests } from './db';
 import { Calendar, parseDate, parseTime, parseIp, at, dateOf, fail, RULES } from './rules';
-import { accrue, consume } from './balances';
+import { accrue, consume, leaveUnits } from './balances';
 import type { RequestInput, RequestOptions, RequestKind } from '../shared/contracts';
 export function options(c: Context, calendar: Calendar, value: unknown): RequestOptions {
   const date = parseDate(value);
@@ -17,7 +17,7 @@ export function options(c: Context, calendar: Calendar, value: unknown): Request
 export async function createRequest(c: Context, calendar: Calendar, body: RequestInput) {
   const date = parseDate(body?.date),
     kind = body?.kind;
-  if (!['ANNUAL', 'REMOTE', 'OFF', 'HOLIDAY'].includes(kind))
+  if (!['ANNUAL', 'HALF_AM', 'HALF_PM', 'REMOTE', 'HOLIDAY'].includes(kind))
     fail('INVALID_KIND', '신청 종류를 선택해 주세요.');
   if (typeof body.reason !== 'string' || !body.reason.trim() || body.reason.trim().length > 500)
     fail('INVALID_REASON', '사유는 1~500자로 입력해 주세요.');
@@ -29,7 +29,7 @@ export async function createRequest(c: Context, calendar: Calendar, body: Reques
       'WRONG_DAY',
       kind === 'HOLIDAY'
         ? '휴일 근무는 주말·공휴일에 신청해 주세요.'
-        : '연차·재택·OFF는 영업일에 신청해 주세요.',
+        : '연차·반차·재택은 영업일에 신청해 주세요.',
     );
   if (await c.m.findOneBy(Requests, { userId: c.user.id, date }))
     fail('DUPLICATE_REQUEST', '하루에 한 종류만 신청할 수 있습니다.', 409);
@@ -67,6 +67,6 @@ export async function createRequest(c: Context, calendar: Calendar, body: Reques
     endTime,
     createdAt: c.now.toISOString(),
   });
-  if (kind === 'ANNUAL' || kind === 'OFF') await consume(c, kind, date, row.id);
+  if (leaveUnits(kind)) await consume(c, leaveUnits(kind), date, row.id);
   return row;
 }

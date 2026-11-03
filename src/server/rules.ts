@@ -96,3 +96,24 @@ export class Calendar {
     return at(previous, RULES.deadline);
   }
 }
+
+export const isHalfDay = (mode: string) => mode === 'HALF_AM' || mode === 'HALF_PM';
+export function attendanceSeconds(start: string, end: Date | string, mode: string): number {
+  const date = dateOf(start);
+  if (mode === 'HALF_PM')
+    return workSeconds(
+      start,
+      new Date(Math.min(new Date(end).getTime(), at(date, RULES.lunchStart).getTime())),
+    );
+  if (mode === 'HALF_AM')
+    return workSeconds(
+      new Date(Math.max(new Date(start).getTime(), at(date, RULES.lunchEnd).getTime())),
+      end,
+    );
+  return workSeconds(start, end);
+}
+export function validateCheckoutTime(mode: string, date: string, end: Date) {
+  if (mode === 'HALF_AM') return;
+  const earliest = mode === 'HALF_PM' ? RULES.lunchStart : RULES.checkOut;
+  if (end < at(date, earliest)) fail('TOO_EARLY', `퇴근 등록은 ${earliest}부터 가능합니다.`);
+}
