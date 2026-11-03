@@ -1,6 +1,6 @@
 # Git 작업 이력
 
-기준: [63923d3](https://github.com/hitchcoke/hiconsy-attendance/commit/63923d3f2ec541b4c0151427c21ceaf6431c82f0). 실제 Git에서 생성한 스냅샷이며, 이 문서를 저장하는 후속 커밋은 다음 생성 때 포함된다.
+기준: [50e76e8](https://github.com/hitchcoke/hiconsy-attendance/commit/50e76e8e8499d9b0f1b851c73260dae3a86e8894). 실제 Git에서 생성한 스냅샷이며, 이 문서를 저장하는 후속 커밋은 다음 생성 때 포함된다.
 
 `npm run history:export`로 main의 이력을 다시 추출한다. task 브랜치는 삭제하지 않고 유지한다.
 
@@ -24,11 +24,32 @@
 | [T15](tasks/T15.md) | task/T15-half-day | [99bdf64](https://github.com/hitchcoke/hiconsy-attendance/commit/99bdf6452aa205b01f2b1f415e3121f95df79132), [2e15cd6](https://github.com/hitchcoke/hiconsy-attendance/commit/2e15cd68a63fc65a69b0c42ba50494f81dff4888) | [a5f6a2c](https://github.com/hitchcoke/hiconsy-attendance/commit/a5f6a2c9f28e423acf97c9502465001523880976) |
 | [T16](tasks/T16.md) | task/T16-runtime-check | [3966e5a](https://github.com/hitchcoke/hiconsy-attendance/commit/3966e5a2a2b98741ad671660fb4441b2466d4005), [6b84433](https://github.com/hitchcoke/hiconsy-attendance/commit/6b84433c1876282309ad2227890323b40281c73c) | [9759e77](https://github.com/hitchcoke/hiconsy-attendance/commit/9759e77f521931822cb4f582d7bb44fd1548b2c7), [e5ffc1d](https://github.com/hitchcoke/hiconsy-attendance/commit/e5ffc1da72185bf618abaf3c6b4b1946c0a418c6) |
 | [T17](tasks/T17.md) | task/T17-leave-approval | [df72921](https://github.com/hitchcoke/hiconsy-attendance/commit/df729216517a42dbcc506c105ef664bbf919f88c), [5494393](https://github.com/hitchcoke/hiconsy-attendance/commit/54943931ce3811c66ba0c9a866f3dca04e48483a) | [fc7fb5c](https://github.com/hitchcoke/hiconsy-attendance/commit/fc7fb5ca78cff7d4513c48ed4fb07a575ac7f56d) |
-| [T18](tasks/T18.md) | task/T18-bug-regression | [ca979d1](https://github.com/hitchcoke/hiconsy-attendance/commit/ca979d180e65ffafd7b68992bea93dcb60c656c0), [dca87a8](https://github.com/hitchcoke/hiconsy-attendance/commit/dca87a8095260ba9063979e0a8001ebf83aae8d8) | [63923d3](https://github.com/hitchcoke/hiconsy-attendance/commit/63923d3f2ec541b4c0151427c21ceaf6431c82f0) |
+| [T18](tasks/T18.md) | task/T18-bug-regression | [ca979d1](https://github.com/hitchcoke/hiconsy-attendance/commit/ca979d180e65ffafd7b68992bea93dcb60c656c0), [dca87a8](https://github.com/hitchcoke/hiconsy-attendance/commit/dca87a8095260ba9063979e0a8001ebf83aae8d8), [6549a95](https://github.com/hitchcoke/hiconsy-attendance/commit/6549a95b6fa1e6ee8042980c93389dececc0a20c) | [63923d3](https://github.com/hitchcoke/hiconsy-attendance/commit/63923d3f2ec541b4c0151427c21ceaf6431c82f0), [d9f1b00](https://github.com/hitchcoke/hiconsy-attendance/commit/d9f1b0053ddb44c62c096701a5b8b81a890d175a) |
+| [T19](tasks/T19.md) | task/T19-calendar-api | [39c6380](https://github.com/hitchcoke/hiconsy-attendance/commit/39c6380f51fdb2dbf87b6e7f3b40b907772881d6) | [5b1652b](https://github.com/hitchcoke/hiconsy-attendance/commit/5b1652b8a68665d33477ad14bf9d54269a40780f) |
+| [T20](tasks/T20.md) | task/T20-calendar-ui | [8dcd057](https://github.com/hitchcoke/hiconsy-attendance/commit/8dcd057b1dce481c7522cfd95fdbbb09309e61df), [ee11e92](https://github.com/hitchcoke/hiconsy-attendance/commit/ee11e92b57c50993bc98a372909c85be05e4b389) | [b196206](https://github.com/hitchcoke/hiconsy-attendance/commit/b196206f0dc0ab078f72ac97c6078bba9311804c) |
+| [T21](tasks/T21.md) | task/T21-calendar-regression | [a80aec3](https://github.com/hitchcoke/hiconsy-attendance/commit/a80aec3245f07bf98f948673e138ce75a1c3214c), [735b13e](https://github.com/hitchcoke/hiconsy-attendance/commit/735b13e7e3e5f923b17f7cf43add794bbcdea647) | [50e76e8](https://github.com/hitchcoke/hiconsy-attendance/commit/50e76e8e8499d9b0f1b851c73260dae3a86e8894) |
 
 ## 그래프
 
 ```text
+*   50e76e8 merge(T21): calendar regression and submission evidence
+|\  
+| * 735b13e docs(T21): publish calendar verification results and user guide
+| * a80aec3 fix(T21): keep calendar request actions visible and cover Electron flows
+|/  
+*   b196206 merge(T20): calendar UI and date-linked request flow
+|\  
+| * ee11e92 feat(T20): prefill requests from calendar and return to selected date
+| * 8dcd057 feat(T20): add monthly calendar with day details and lead member filter
+|/  
+*   5b1652b merge(T19): monthly calendar query contract
+|\  
+| * 39c6380 feat(T19): add authorized monthly attendance and request calendar API
+|/  
+*   d9f1b00 merge(T18): publish updated task history
+|\  
+| * 6549a95 docs(T18): record approval and regression task history
+|/  
 *   63923d3 merge(T18): tested UI fixes and regression documentation
 |\  
 | * dca87a8 docs(T18): publish approval tests, bug reproductions and verification evidence

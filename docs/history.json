@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-03T07:37:42.791Z",
+  "generatedAt": "2026-11-03T08:56:58.547Z",
   "repository": "https://github.com/hitchcoke/hiconsy-attendance",
   "ref": "main",
-  "head": "63923d3f2ec541b4c0151427c21ceaf6431c82f0",
+  "head": "50e76e8e8499d9b0f1b851c73260dae3a86e8894",
   "tasks": [
     {
       "id": "T00",
@@ -285,15 +285,64 @@
       "branches": [
         {
           "name": "task/T18-bug-regression",
-          "sha": "63923d3f2ec541b4c0151427c21ceaf6431c82f0"
+          "sha": "6549a95b6fa1e6ee8042980c93389dececc0a20c"
         }
       ],
       "commits": [
         "ca979d180e65ffafd7b68992bea93dcb60c656c0",
-        "dca87a8095260ba9063979e0a8001ebf83aae8d8"
+        "dca87a8095260ba9063979e0a8001ebf83aae8d8",
+        "6549a95b6fa1e6ee8042980c93389dececc0a20c"
       ],
       "merges": [
-        "63923d3f2ec541b4c0151427c21ceaf6431c82f0"
+        "63923d3f2ec541b4c0151427c21ceaf6431c82f0",
+        "d9f1b0053ddb44c62c096701a5b8b81a890d175a"
+      ]
+    },
+    {
+      "id": "T19",
+      "branches": [
+        {
+          "name": "task/T19-calendar-api",
+          "sha": "39c6380f51fdb2dbf87b6e7f3b40b907772881d6"
+        }
+      ],
+      "commits": [
+        "39c6380f51fdb2dbf87b6e7f3b40b907772881d6"
+      ],
+      "merges": [
+        "5b1652b8a68665d33477ad14bf9d54269a40780f"
+      ]
+    },
+    {
+      "id": "T20",
+      "branches": [
+        {
+          "name": "task/T20-calendar-ui",
+          "sha": "ee11e92b57c50993bc98a372909c85be05e4b389"
+        }
+      ],
+      "commits": [
+        "8dcd057b1dce481c7522cfd95fdbbb09309e61df",
+        "ee11e92b57c50993bc98a372909c85be05e4b389"
+      ],
+      "merges": [
+        "b196206f0dc0ab078f72ac97c6078bba9311804c"
+      ]
+    },
+    {
+      "id": "T21",
+      "branches": [
+        {
+          "name": "task/T21-calendar-regression",
+          "sha": "50e76e8e8499d9b0f1b851c73260dae3a86e8894"
+        }
+      ],
+      "commits": [
+        "a80aec3245f07bf98f948673e138ce75a1c3214c",
+        "735b13e7e3e5f923b17f7cf43add794bbcdea647"
+      ],
+      "merges": [
+        "50e76e8e8499d9b0f1b851c73260dae3a86e8894"
       ]
     }
   ],
@@ -372,7 +421,19 @@
     },
     {
       "name": "task/T18-bug-regression",
-      "sha": "63923d3f2ec541b4c0151427c21ceaf6431c82f0"
+      "sha": "6549a95b6fa1e6ee8042980c93389dececc0a20c"
+    },
+    {
+      "name": "task/T19-calendar-api",
+      "sha": "39c6380f51fdb2dbf87b6e7f3b40b907772881d6"
+    },
+    {
+      "name": "task/T20-calendar-ui",
+      "sha": "ee11e92b57c50993bc98a372909c85be05e4b389"
+    },
+    {
+      "name": "task/T21-calendar-regression",
+      "sha": "50e76e8e8499d9b0f1b851c73260dae3a86e8894"
     }
   ],
   "commits": [
@@ -872,6 +933,110 @@
       "author": "hitchcoke",
       "date": "2026-11-03T16:37:42+09:00",
       "subject": "merge(T18): tested UI fixes and regression documentation",
+      "merge": true
+    },
+    {
+      "sha": "6549a95b6fa1e6ee8042980c93389dececc0a20c",
+      "parents": [
+        "63923d3f2ec541b4c0151427c21ceaf6431c82f0"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:37:42+09:00",
+      "subject": "docs(T18): record approval and regression task history",
+      "merge": false
+    },
+    {
+      "sha": "d9f1b0053ddb44c62c096701a5b8b81a890d175a",
+      "parents": [
+        "63923d3f2ec541b4c0151427c21ceaf6431c82f0",
+        "6549a95b6fa1e6ee8042980c93389dececc0a20c"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:37:42+09:00",
+      "subject": "merge(T18): publish updated task history",
+      "merge": true
+    },
+    {
+      "sha": "39c6380f51fdb2dbf87b6e7f3b40b907772881d6",
+      "parents": [
+        "d9f1b0053ddb44c62c096701a5b8b81a890d175a"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:40:56+09:00",
+      "subject": "feat(T19): add authorized monthly attendance and request calendar API",
+      "merge": false
+    },
+    {
+      "sha": "5b1652b8a68665d33477ad14bf9d54269a40780f",
+      "parents": [
+        "d9f1b0053ddb44c62c096701a5b8b81a890d175a",
+        "39c6380f51fdb2dbf87b6e7f3b40b907772881d6"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:40:56+09:00",
+      "subject": "merge(T19): monthly calendar query contract",
+      "merge": true
+    },
+    {
+      "sha": "8dcd057b1dce481c7522cfd95fdbbb09309e61df",
+      "parents": [
+        "5b1652b8a68665d33477ad14bf9d54269a40780f"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:48:34+09:00",
+      "subject": "feat(T20): add monthly calendar with day details and lead member filter",
+      "merge": false
+    },
+    {
+      "sha": "ee11e92b57c50993bc98a372909c85be05e4b389",
+      "parents": [
+        "8dcd057b1dce481c7522cfd95fdbbb09309e61df"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:48:34+09:00",
+      "subject": "feat(T20): prefill requests from calendar and return to selected date",
+      "merge": false
+    },
+    {
+      "sha": "b196206f0dc0ab078f72ac97c6078bba9311804c",
+      "parents": [
+        "5b1652b8a68665d33477ad14bf9d54269a40780f",
+        "ee11e92b57c50993bc98a372909c85be05e4b389"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:48:34+09:00",
+      "subject": "merge(T20): calendar UI and date-linked request flow",
+      "merge": true
+    },
+    {
+      "sha": "a80aec3245f07bf98f948673e138ce75a1c3214c",
+      "parents": [
+        "b196206f0dc0ab078f72ac97c6078bba9311804c"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:56:51+09:00",
+      "subject": "fix(T21): keep calendar request actions visible and cover Electron flows",
+      "merge": false
+    },
+    {
+      "sha": "735b13e7e3e5f923b17f7cf43add794bbcdea647",
+      "parents": [
+        "a80aec3245f07bf98f948673e138ce75a1c3214c"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:56:51+09:00",
+      "subject": "docs(T21): publish calendar verification results and user guide",
+      "merge": false
+    },
+    {
+      "sha": "50e76e8e8499d9b0f1b851c73260dae3a86e8894",
+      "parents": [
+        "b196206f0dc0ab078f72ac97c6078bba9311804c",
+        "735b13e7e3e5f923b17f7cf43add794bbcdea647"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:56:51+09:00",
+      "subject": "merge(T21): calendar regression and submission evidence",
       "merge": true
     }
   ]
