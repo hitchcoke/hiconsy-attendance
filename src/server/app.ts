@@ -6,6 +6,7 @@ import { Platform } from './platform';
 import { Calendar } from './rules';
 import type { Request } from 'express';
 import { gateway, loginGateway } from './gateway';
+import { balances } from './balances';
 @Catch()
 class ErrorFilter implements ExceptionFilter {
   catch(error:unknown,host:ArgumentsHost) {
@@ -19,6 +20,7 @@ class ApiController {
   constructor(@Inject(Platform) private platform:Platform) {}
   @Post('auth/login') login(@Req() req:Request) {return loginGateway(this.platform,req);}
   @Post('auth/logout') logout(@Req() req:Request) {return gateway(this.platform,req,'LOGOUT',async()=>{this.platform.sessions.delete((req.headers.authorization||'').replace(/^Bearer /,''));return {ok:true};});}
+  @Get('balances') balance(@Req() req:Request) {return gateway(this.platform,req,'BALANCES',balances);}
   @Get('me') me(@Req() req:Request) {return gateway(this.platform,req,'PROFILE',async c=>c.user);}
   @Get('clock') clock(@Req() req:Request) {return gateway(this.platform,req,'CLOCK',async c=>({now:c.now.toISOString(),demo:this.platform.demo}));}
 }
