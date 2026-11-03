@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import request from 'supertest';
+import { approvePending } from './approval-helpers';
 import { createApp } from '../app';
 import { Settings, Requests, Entries } from '../db';
 test('remote work requires its own IP even on office network', async () => {
@@ -98,6 +99,7 @@ test('holiday correction grants half-day credit; afternoon leave ends at lunch',
     await post('requests', { kind: 'HALF_PM', date: '2026-03-17', reason: '오후 휴식' }).expect(
       201,
     );
+    await approvePending(a);
     await set('2026-03-17T07:30:00');
     await post('attendance/check-in').expect(201);
     await set('2026-03-17T11:30:00');

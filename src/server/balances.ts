@@ -26,7 +26,11 @@ export async function accrue(c: Context) {
 function available(entries: BalanceEntry[], today: string, useDate: string) {
   return entries
     .filter(
-      (e) => e.amount > 0 && e.grantedDate <= today && (!e.expiresDate || e.expiresDate >= useDate),
+      (e) =>
+        e.amount > 0 &&
+        e.grantId === null &&
+        e.grantedDate <= today &&
+        (!e.expiresDate || e.expiresDate >= useDate),
     )
     .map((grant) => ({
       grant,
@@ -52,11 +56,25 @@ export async function balances(c: Context): Promise<Balances> {
     remote: Math.max(
       0,
       RULES.remoteLimit -
-        requests.filter((r) => r.kind === 'REMOTE' && r.date.slice(0, 7) === today.slice(0, 7))
-          .length,
+        requests.filter(
+          (r) =>
+            r.status === 'APPROVED' &&
+            r.kind === 'REMOTE' &&
+            r.date.slice(0, 7) === today.slice(0, 7),
+        ).length,
     ),
     reservedDays:
-      requests.filter((r) => r.date >= today).reduce((sum, r) => sum + leaveUnits(r.kind), 0) / 2,
+      requests
+        .filter((r) => r.status === 'PENDING' || (r.status === 'APPROVED' && r.date >= today))
+        .reduce((sum, r) => sum + leaveUnits(r.kind), 0) / 2,
+    pendingDays:
+      requests
+        .filter((r) => r.status === 'PENDING')
+        .reduce((sum, r) => sum + leaveUnits(r.kind), 0) / 2,
+    approvedDays:
+      requests
+        .filter((r) => r.status === 'APPROVED' && r.date >= today)
+        .reduce((sum, r) => sum + leaveUnits(r.kind), 0) / 2,
     expiring: grants
       .filter((g) => g.grant.expiresDate)
       .map((g) => ({ date: g.grant.expiresDate!, days: g.units / 2 })),
@@ -100,4 +118,19 @@ export async function grantHolidayLeave(c: Context, attendance: Attendance) {
     })
     .orIgnore()
     .execute();
+}
+
+export async function releaseReservation(c: Context, requestId: number, userId: number) {
+  const entries = await c.m.findBy(Entries, { requestId, userId });
+  for (const entry of entries.filter((e) => e.amount < 0)) {
+    await c.m.insert(Entries, {
+      userId,
+      kind: entry.kind,
+      amount: -entry.amount,
+      sourceKey: `release:${requestId}:${entry.grantId}`,
+      grantId: entry.grantId,
+      requestId,
+      grantedDate: dateOf(c.now),
+    });
+  }
 }

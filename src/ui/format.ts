@@ -32,7 +32,10 @@ export const actionLabel: Record<string, string> = {
   CLOCK: '현재 시각 확인',
   BALANCES: '잔여 조회',
   REQUEST_LIST: '신청 내역 조회',
-  REQUEST_CREATE: '신청 확정',
+  REQUEST_CREATE: '신청 접수',
+  REQUEST_APPROVE: '휴가 승인',
+  REQUEST_REJECT: '휴가 반려',
+  APPROVAL_LIST: '휴가 승인 목록 조회',
   REQUEST_OPTIONS: '신청 가능 여부 확인',
   TODAY: '오늘 현황 조회',
   ATTENDANCE_CHECK_IN: '출근 등록',
@@ -43,4 +46,10 @@ export const actionLabel: Record<string, string> = {
   TEAM: '팀 현황 조회',
   TEAM_MEMBER: '팀원 상세 조회',
   DEMO_CLOCK: '시연 시각 변경',
+};
+
+export const requestStatusLabel: Record<string, string> = {
+  PENDING: '승인 대기',
+  APPROVED: '승인',
+  REJECTED: '반려',
 };

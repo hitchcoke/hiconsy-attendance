@@ -14,7 +14,12 @@ const menu = computed(() => [
   { path: '/today', label: '오늘', icon: House },
   { path: '/requests', label: '신청', icon: Calendar },
   { path: '/history', label: '내 근태', icon: Document },
-  ...(session.user?.role === 'LEAD' ? [{ path: '/team', label: '팀 현황', icon: User }] : []),
+  ...(session.user?.role === 'LEAD'
+    ? [
+        { path: '/approvals', label: '휴가 승인', icon: Document },
+        { path: '/team', label: '팀 현황', icon: User },
+      ]
+    : []),
 ]);
 async function restore() {
   restoreError.value = '';

@@ -4,8 +4,10 @@ import { ElMessage } from 'element-plus';
 import { Plus, Refresh } from '@element-plus/icons-vue';
 import { api } from '../api';
 import type { WorkRequest, RequestKind, RequestOptions, Balances } from '../../shared/contracts';
-import { kindLabel, datetime } from '../format';
+import { useSession } from '../store';
+import { kindLabel, datetime, requestStatusLabel } from '../format';
 import BalanceCards from '../components/BalanceCards.vue';
+const session = useSession();
 const rows = ref<WorkRequest[]>([]),
   balance = ref<Balances>(),
   loading = ref(false),
@@ -89,10 +91,12 @@ async function submit() {
   busy.value = true;
   formError.value = '';
   try {
-    await api('/requests', form);
+    const result = await api<WorkRequest>('/requests', form);
     dialog.value = false;
     form.reason = '';
-    ElMessage.success('신청이 확정되었습니다.');
+    ElMessage.success(
+      result.status === 'PENDING' ? '리드에게 승인을 요청했습니다.' : '신청이 확정되었습니다.',
+    );
     await load();
   } catch (e) {
     formError.value = (e as Error).message;
@@ -135,6 +139,18 @@ onMounted(load);
         ><template #default="{ row }"
           ><span class="tag blue">{{ kindLabel[row.kind] }}</span></template
         ></el-table-column
+      ><el-table-column label="상태" width="100"
+        ><template #default="{ row }"
+          ><span
+            class="tag"
+            :class="{
+              orange: row.status === 'PENDING',
+              green: row.status === 'APPROVED',
+              red: row.status === 'REJECTED',
+            }"
+            >{{ requestStatusLabel[row.status] }}</span
+          ></template
+        ></el-table-column
       ><el-table-column
         label="사유"
         prop="reason"
@@ -149,8 +165,16 @@ onMounted(load);
           ><span v-else-if="row.kind === 'HALF_PM'" class="muted">오후 휴가 · 11:30 퇴근</span
           ><span v-else class="muted">—</span></template
         ></el-table-column
-      ><el-table-column label="상태" width="80"
-        ><template #default><span class="tag green">확정</span></template></el-table-column
+      ><el-table-column label="처리 결과" min-width="170"
+        ><template #default="{ row }"
+          ><span>{{
+            row.reviewNote ||
+            (row.status === 'PENDING' ? '리드 검토 중' : row.reviewedAt ? '처리 완료' : '자동 확정')
+          }}</span
+          ><small v-if="row.reviewedAt" class="cell-sub">{{
+            datetime(row.reviewedAt)
+          }}</small></template
+        ></el-table-column
       ></el-table
     >
   </section>
@@ -158,7 +182,7 @@ onMounted(load);
     <span>ⓘ</span>
     <p>
       모든 신청은 <strong>전 영업일 오후 5시</strong>까지 가능해요. 신청하면 잔여에서 바로 예약
-      차감됩니다.
+      차감됩니다. 팀원 연차·반차는 리드 승인 후 적용되며 반려 시 반환됩니다.
     </p>
   </div>
   <el-dialog v-model="dialog" title="새 신청" width="540px" :close-on-click-modal="!busy"
@@ -180,6 +204,13 @@ onMounted(load);
           점심 시작인 11:30까지 근무합니다. 07:30~11:30 근무 시 4시간입니다.
         </p>
       </template>
+      <p v-if="category === 'LEAVE'" class="field-hint">
+        {{
+          session.user?.role === 'LEAD'
+            ? '리드 본인의 휴가는 자동 확정됩니다.'
+            : '신청 후 리드 승인이 필요합니다. 승인 전에는 기존 근무 기준을 따릅니다.'
+        }}
+      </p>
       <label for="request-date">사용일</label
       ><input
         id="request-date"
@@ -228,7 +259,9 @@ onMounted(load);
           native-type="submit"
           :loading="busy"
           :disabled="!form.date || !form.reason.trim() || !opt?.open || optLoading"
-          >신청 확정</el-button
+          >{{
+            category === 'LEAVE' && session.user?.role === 'MEMBER' ? '승인 요청' : '신청 확정'
+          }}</el-button
         >
       </div>
     </form></el-dialog

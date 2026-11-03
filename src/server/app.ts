@@ -19,7 +19,7 @@ import type { Request } from 'express';
 import { gateway, loginGateway } from './gateway';
 import { balances } from './balances';
 import { Requests } from './db';
-import { createRequest, options } from './requests';
+import { createRequest, options, approvals, reviewRequest } from './requests';
 import { today, checkIn, checkOut } from './attendance';
 import { history, detail, correct, positiveId } from './history';
 import { team, member } from './team';
@@ -98,6 +98,18 @@ class ApiController {
   @Post('attendance/check-out') checkOut(@Req() req: Request) {
     return gateway(this.platform, req, 'ATTENDANCE_CHECK_OUT', (c) =>
       checkOut(c, this.platform.calendar),
+    );
+  }
+  @Get('approvals') approvals(@Req() req: Request) {
+    return gateway(this.platform, req, 'APPROVAL_LIST', approvals, true);
+  }
+  @Post('requests/:id/review') review(@Req() req: Request) {
+    return gateway(
+      this.platform,
+      req,
+      req.body?.decision === 'REJECTED' ? 'REQUEST_REJECT' : 'REQUEST_APPROVE',
+      (c) => reviewRequest(c, positiveId(req.params.id), req.body),
+      true,
     );
   }
   @Get('requests') requests(@Req() req: Request) {

@@ -3,7 +3,7 @@
 ## 데이터
 - users: id, login(unique), passwordHash, name, role(MEMBER/LEAD), hireDate.
 - attendances: id, userId(FK), workDate, checkIn, checkOut(nullable), workSeconds, late, early, manual, mode. unique(userId,workDate).
-- requests: id, userId(FK), kind(ANNUAL/HALF_AM/HALF_PM/REMOTE/HOLIDAY), date, reason, ip/startTime/endTime(nullable), createdAt. unique(userId,date). 모두 확정 상태.
+- requests: id, userId(FK), kind(ANNUAL/HALF_AM/HALF_PM/REMOTE/HOLIDAY), date, reason, ip/startTime/endTime(nullable), createdAt, status, reviewedBy, reviewedAt, reviewNote. 대기·승인 상태에만 unique(userId,date) 적용.
 - balance_entries: id, userId(FK), kind(ANNUAL/HOLIDAY), amount(+지급/-사용, 정수 1단위=0.5일), sourceKey(unique), grantId(nullable FK), requestId(nullable FK), grantedDate, expiresDate(nullable).
 - holidays: date(PK), name. 초기 목록의 지원 연도 밖 날짜는 명시적 오류.
 - audit_logs: id, actorId(nullable FK), action, target, result, code, at, ip. 요청 본문·비밀번호·토큰 저장 금지.
@@ -53,3 +53,12 @@ GET /team/:id?from&to → 리드 전용 팀원 근태/신청/이력.
 | 409 | ALREADY_CHECKED_IN, ALREADY_CHECKED_OUT, MISSING_CHECKOUT, DUPLICATE_REQUEST | 기존 상태 새로고침 또는 누락 보정 |
 | 409 | INSUFFICIENT_BALANCE, REMOTE_LIMIT | 잔여/한도 안내 |
 | 500 | INTERNAL_ERROR | 일반 오류·재시도, 서버 내부 정보 숨김 |
+
+## T17 승인 계약
+- WorkRequest에 status(PENDING/APPROVED/REJECTED), reviewedBy(사용자 FK, nullable), reviewedAt, reviewNote(nullable) 추가. 기존 데이터의 기본 상태는 APPROVED.
+- requests의 사용자·날짜 유일 제약은 PENDING/APPROVED에만 적용한다. REJECTED는 이력으로 남기고 마감 전 재신청 가능.
+- GET /approvals: 리드 전용. 전체 연차·반차 신청을 신청자 이름/역할·승인 가능 여부·불가 사유와 반환. 날짜 선택 없이 향후 신청도 표시한다.
+- POST /requests/:id/review {decision: APPROVED|REJECTED, reason?:string}: 리드 전용. 반려 사유 필수. 성공 시 WorkRequest 반환. 중복 심사 409, 본인 심사 403, 과거/이미 출근한 날 승인 409.
+- Balances.pendingDays, approvedDays 추가. reservedDays는 두 값의 합계이며 반려분 제외. annual은 예약을 제외한 신청 가능 잔여.
+- 반려 반환은 balance_entries에 양수 행으로 추가하되 grantId를 원래 지급 행으로 연결하고 sourceKey=release:requestId:grantId로 중복 방지. 양수 중 grantId가 없는 행만 지급 원본이다.
+- 신청·예약, 심사·반환·이력은 각각 한 트랜잭션으로 처리한다. 출퇴근/IP 판단은 APPROVED만 사용한다.

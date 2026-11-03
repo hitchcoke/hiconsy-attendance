@@ -98,6 +98,15 @@ onUnmounted(() => {
     show-icon
     class="mb"
   /><el-alert
+    v-if="value?.pendingRequest"
+    title="오늘 휴가가 승인 대기 중입니다."
+    type="warning"
+    :closable="false"
+    show-icon
+    class="mb"
+    ><p>리드 승인 전에는 기존 근무 기준으로 출퇴근해 주세요.</p>
+    <RouterLink to="/requests" class="text-link">신청 상태 확인 →</RouterLink></el-alert
+  ><el-alert
     v-if="value?.missing.length"
     title="퇴근 기록이 비어 있어요"
     :description="`${value.missing.length}건의 퇴근 시각을 입력하면 오늘 출근을 등록할 수 있어요.`"

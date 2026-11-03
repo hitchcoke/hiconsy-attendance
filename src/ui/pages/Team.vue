@@ -56,6 +56,7 @@ onMounted(load);
       <h1 class="mt-small">팀 현황</h1>
     </div>
     <div class="filter-row" style="margin: 0">
+      <RouterLink to="/approvals" class="text-link">휴가 승인 →</RouterLink>
       <input v-model="date" type="date" aria-label="팀 현황 날짜" @change="load" /><el-button
         :icon="Refresh"
         :loading="loading"
