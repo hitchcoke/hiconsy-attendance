@@ -1,6 +1,6 @@
 # Git 작업 이력
 
-기준: [9759e77](https://github.com/hitchcoke/hiconsy-attendance/commit/9759e77f521931822cb4f582d7bb44fd1548b2c7). 실제 Git에서 생성한 스냅샷이며, 이 문서를 저장하는 후속 커밋은 다음 생성 때 포함된다.
+기준: [63923d3](https://github.com/hitchcoke/hiconsy-attendance/commit/63923d3f2ec541b4c0151427c21ceaf6431c82f0). 실제 Git에서 생성한 스냅샷이며, 이 문서를 저장하는 후속 커밋은 다음 생성 때 포함된다.
 
 `npm run history:export`로 main의 이력을 다시 추출한다. task 브랜치는 삭제하지 않고 유지한다.
 
@@ -22,11 +22,27 @@
 | [T13](tasks/T13.md) | task/T13-packaging | [b93f987](https://github.com/hitchcoke/hiconsy-attendance/commit/b93f987927a5f5ac215b3bebfd4471148d4277c9) | [dcd24f1](https://github.com/hitchcoke/hiconsy-attendance/commit/dcd24f1dc69095a6880992580b0c1cd323a8bd21) |
 | [T14](tasks/T14.md) | task/T14-submission | [590471b](https://github.com/hitchcoke/hiconsy-attendance/commit/590471b9ee03728e6bc4bd4911f9831ede1e6458), [4184a0a](https://github.com/hitchcoke/hiconsy-attendance/commit/4184a0a6b47530419254ff1cc5f04a5f14a6c9c9) | [d8bd1d2](https://github.com/hitchcoke/hiconsy-attendance/commit/d8bd1d2250d82bd06c3e9c125eeec35689d475c0), [ae2c57b](https://github.com/hitchcoke/hiconsy-attendance/commit/ae2c57b5c6afcef63f051cff3d1d0900a339af0c) |
 | [T15](tasks/T15.md) | task/T15-half-day | [99bdf64](https://github.com/hitchcoke/hiconsy-attendance/commit/99bdf6452aa205b01f2b1f415e3121f95df79132), [2e15cd6](https://github.com/hitchcoke/hiconsy-attendance/commit/2e15cd68a63fc65a69b0c42ba50494f81dff4888) | [a5f6a2c](https://github.com/hitchcoke/hiconsy-attendance/commit/a5f6a2c9f28e423acf97c9502465001523880976) |
-| [T16](tasks/T16.md) | task/T16-runtime-check | [3966e5a](https://github.com/hitchcoke/hiconsy-attendance/commit/3966e5a2a2b98741ad671660fb4441b2466d4005) | [9759e77](https://github.com/hitchcoke/hiconsy-attendance/commit/9759e77f521931822cb4f582d7bb44fd1548b2c7) |
+| [T16](tasks/T16.md) | task/T16-runtime-check | [3966e5a](https://github.com/hitchcoke/hiconsy-attendance/commit/3966e5a2a2b98741ad671660fb4441b2466d4005), [6b84433](https://github.com/hitchcoke/hiconsy-attendance/commit/6b84433c1876282309ad2227890323b40281c73c) | [9759e77](https://github.com/hitchcoke/hiconsy-attendance/commit/9759e77f521931822cb4f582d7bb44fd1548b2c7), [e5ffc1d](https://github.com/hitchcoke/hiconsy-attendance/commit/e5ffc1da72185bf618abaf3c6b4b1946c0a418c6) |
+| [T17](tasks/T17.md) | task/T17-leave-approval | [df72921](https://github.com/hitchcoke/hiconsy-attendance/commit/df729216517a42dbcc506c105ef664bbf919f88c), [5494393](https://github.com/hitchcoke/hiconsy-attendance/commit/54943931ce3811c66ba0c9a866f3dca04e48483a) | [fc7fb5c](https://github.com/hitchcoke/hiconsy-attendance/commit/fc7fb5ca78cff7d4513c48ed4fb07a575ac7f56d) |
+| [T18](tasks/T18.md) | task/T18-bug-regression | [ca979d1](https://github.com/hitchcoke/hiconsy-attendance/commit/ca979d180e65ffafd7b68992bea93dcb60c656c0), [dca87a8](https://github.com/hitchcoke/hiconsy-attendance/commit/dca87a8095260ba9063979e0a8001ebf83aae8d8) | [63923d3](https://github.com/hitchcoke/hiconsy-attendance/commit/63923d3f2ec541b4c0151427c21ceaf6431c82f0) |
 
 ## 그래프
 
 ```text
+*   63923d3 merge(T18): tested UI fixes and regression documentation
+|\  
+| * dca87a8 docs(T18): publish approval tests, bug reproductions and verification evidence
+| * ca979d1 fix(T18): correct session recovery and attendance display regressions
+|/  
+*   fc7fb5c merge(T17): team member leave approval workflow
+|\  
+| * 5494393 feat(T17): add lead approval inbox and applicant decision states
+| * df72921 feat(T17): add lead leave decisions and transactional reservation refunds
+|/  
+*   e5ffc1d merge(T16): publish runtime fix history
+|\  
+| * 6b84433 docs(T16): record runtime fix and merge history
+|/  
 *   9759e77 merge(T16): fix local Node version startup guidance
 |\  
 | * 3966e5a fix(T16): check Node runtime before launching development processes
