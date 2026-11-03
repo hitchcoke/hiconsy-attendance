@@ -12,6 +12,7 @@ import { createRequest,options } from './requests';
 import { today,checkIn,checkOut } from './attendance';
 import { history,detail,correct,positiveId } from './history';
 import { team,member } from './team';
+import { setClock } from './demo';
 @Catch()
 class ErrorFilter implements ExceptionFilter {
   catch(error:unknown,host:ArgumentsHost) {
@@ -25,6 +26,7 @@ class ApiController {
   constructor(@Inject(Platform) private platform:Platform) {}
   @Post('auth/login') login(@Req() req:Request) {return loginGateway(this.platform,req);}
   @Post('auth/logout') logout(@Req() req:Request) {return gateway(this.platform,req,'LOGOUT',async()=>{this.platform.sessions.delete((req.headers.authorization||'').replace(/^Bearer /,''));return {ok:true};});}
+  @Post('demo/clock') setClock(@Req() req:Request) {return gateway(this.platform,req,'DEMO_CLOCK',c=>setClock(c,this.platform.calendar,this.platform.demo,req.body?.now),true);}
   @Get('team') team(@Req() req:Request) {return gateway(this.platform,req,'TEAM',c=>team(c,req.query.date),true);}
   @Get('team/:id') member(@Req() req:Request) {return gateway(this.platform,req,'TEAM_MEMBER',c=>member(c,positiveId(req.params.id),req.query),true);}
   @Get('attendance') history(@Req() req:Request) {return gateway(this.platform,req,'HISTORY',c=>history(c,req.query));}
