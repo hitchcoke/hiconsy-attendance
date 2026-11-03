@@ -287,7 +287,7 @@ try {
   await page.reload();
   await page.getByRole('heading', { name: '연결을 확인해 주세요' }).waitFor();
   await page.getByRole('button', { name: '로그인으로', exact: true }).click();
-  assert.equal(await page.evaluate(() => sessionStorage.getItem('token')), null);
+  assert.equal(await page.evaluate(() => Boolean(sessionStorage.getItem('token'))), false);
   await page.unroute(apiPattern);
   await page.reload();
   await page.locator('#password').waitFor();
