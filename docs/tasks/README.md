@@ -20,6 +20,7 @@
 | [T15](T15.md) 반차 변경 | T12 | 계약·DB 마이그레이션·규칙·신청/잔여/근태 UI | 통합 연차, 오전/오후 각 0.5일, 점심 경계 |
 | [T13](T13.md) 패키징 | T12, T15 | forge.config.cjs, electron/, vite.config.mts, 실행·검증 스크립트 | macOS 패키지 실제 실행·서버/앱 재시작 |
 | [T14](T14.md) 제출 문서 | T13 | README, docs/, .github/workflows/, scripts/export-history.mjs | 실행·시연·FR·Git 기록 공개 |
+| [T16](T16.md) 실행 환경 | T13 | scripts/dev.mjs, README | Node 21 오류 안내·Node 24 실행 확인 |
 
 파일 표의 `pages/`와 `components/`는 `src/ui/` 아래다. 정확한 변경 목록은 [Git 이력](../history.md)과 커밋 diff를 확인한다. T06/T07은 오늘 화면에 필요한 잔여·신청 계약을 먼저 연결하기 위해 T04보다 먼저 구현했다. 요청 변경 T15는 T12 이후, 패키징 전에 진행했다.
 
