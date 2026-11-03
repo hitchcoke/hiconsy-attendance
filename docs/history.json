@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-03T07:06:39.649Z",
+  "generatedAt": "2026-11-03T07:07:23.501Z",
   "repository": "https://github.com/hitchcoke/hiconsy-attendance",
   "ref": "main",
-  "head": "dcd24f1dc69095a6880992580b0c1cd323a8bd21",
+  "head": "d8bd1d2250d82bd06c3e9c125eeec35689d475c0",
   "tasks": [
     {
       "id": "T00",
@@ -219,11 +219,15 @@
       "branches": [
         {
           "name": "task/T14-submission",
-          "sha": "dcd24f1dc69095a6880992580b0c1cd323a8bd21"
+          "sha": "d8bd1d2250d82bd06c3e9c125eeec35689d475c0"
         }
       ],
-      "commits": [],
-      "merges": []
+      "commits": [
+        "590471b9ee03728e6bc4bd4911f9831ede1e6458"
+      ],
+      "merges": [
+        "d8bd1d2250d82bd06c3e9c125eeec35689d475c0"
+      ]
     },
     {
       "id": "T15",
@@ -301,7 +305,7 @@
     },
     {
       "name": "task/T14-submission",
-      "sha": "dcd24f1dc69095a6880992580b0c1cd323a8bd21"
+      "sha": "d8bd1d2250d82bd06c3e9c125eeec35689d475c0"
     },
     {
       "name": "task/T15-half-day",
@@ -659,6 +663,27 @@
       "author": "hitchcoke",
       "date": "2026-11-03T16:04:42+09:00",
       "subject": "merge(T13): verified macOS package and lifecycle",
+      "merge": true
+    },
+    {
+      "sha": "590471b9ee03728e6bc4bd4911f9831ede1e6458",
+      "parents": [
+        "dcd24f1dc69095a6880992580b0c1cd323a8bd21"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:07:23+09:00",
+      "subject": "docs(T14): document execution, verification and task history",
+      "merge": false
+    },
+    {
+      "sha": "d8bd1d2250d82bd06c3e9c125eeec35689d475c0",
+      "parents": [
+        "dcd24f1dc69095a6880992580b0c1cd323a8bd21",
+        "590471b9ee03728e6bc4bd4911f9831ede1e6458"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:07:23+09:00",
+      "subject": "merge(T14): submission documentation and validation workflow",
       "merge": true
     }
   ]
