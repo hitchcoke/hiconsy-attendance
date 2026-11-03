@@ -28,7 +28,7 @@ export async function schedule(
   instant: Date,
   checkIp = true,
 ): Promise<WorkRequest | null> {
-  const req = await c.m.findOneBy(Requests, { userId: c.user.id, date });
+  const req = await c.m.findOneBy(Requests, { userId: c.user.id, date, status: 'APPROVED' });
   if (!calendar.business(date) && req?.kind !== 'HOLIDAY')
     fail('HOLIDAY_REQUEST_REQUIRED', '주말·공휴일에는 휴일 근무 신청이 필요합니다.');
   if (req?.kind === 'ANNUAL') fail('ANNUAL_DAY', '연차 사용일에는 출퇴근할 수 없습니다.');
@@ -111,8 +111,9 @@ export async function today(c: Context, calendar: Calendar, demo: boolean): Prom
     date,
     clock: { now: c.now.toISOString(), demo },
     attendance,
-    request: await c.m.findOneBy(Requests, { userId: c.user.id, date }),
+    request: await c.m.findOneBy(Requests, { userId: c.user.id, date, status: 'APPROVED' }),
     missing: await missing(c),
+    pendingRequest: await c.m.findOneBy(Requests, { userId: c.user.id, date, status: 'PENDING' }),
     balances: await balances(c),
     checkIn: await action(() => canCheckIn(c, calendar), '출근 등록 가능'),
     checkOut: await action(() => canCheckOut(c, calendar), '퇴근 등록 가능'),

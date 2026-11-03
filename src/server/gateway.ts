@@ -27,7 +27,7 @@ export async function gateway<T>(
         const target =
           action.startsWith('ATTENDANCE_') && value && typeof value === 'object' && 'id' in value
             ? `attendance:${value.id}`
-            : action === 'REQUEST_CREATE' && value && typeof value === 'object' && 'id' in value
+            : action.startsWith('REQUEST_') && value && typeof value === 'object' && 'id' in value
               ? `request:${value.id}`
               : req.path;
         await p.log(m, user.id, action, target, 'SUCCESS', '', now, ip);

@@ -1,5 +1,6 @@
 export type Role = 'MEMBER' | 'LEAD';
 export type RequestKind = 'ANNUAL' | 'HALF_AM' | 'HALF_PM' | 'REMOTE' | 'HOLIDAY';
+export type RequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 export interface User {
   id: number;
   login: string;
@@ -17,6 +18,15 @@ export interface WorkRequest {
   startTime: string | null;
   endTime: string | null;
   createdAt: string;
+  status: RequestStatus;
+  reviewedBy: number | null;
+  reviewedAt: string | null;
+  reviewNote: string | null;
+}
+export interface ApprovalItem extends WorkRequest {
+  applicant: User;
+  canApprove: boolean;
+  approvalBlockedReason: string;
 }
 export interface Attendance {
   id: number;
@@ -45,6 +55,8 @@ export interface Balances {
   annual: number;
   remote: number;
   reservedDays: number;
+  pendingDays: number;
+  approvedDays: number;
   expiring: { date: string; days: number }[];
   entries: BalanceEntry[];
 }
@@ -63,6 +75,7 @@ export interface Today {
   attendance: Attendance | null;
   request: WorkRequest | null;
   missing: Attendance[];
+  pendingRequest: WorkRequest | null;
   balances: Balances;
   checkIn: ActionState;
   checkOut: ActionState;

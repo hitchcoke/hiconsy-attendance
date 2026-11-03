@@ -8,7 +8,7 @@ export async function team(c: Context, value: unknown): Promise<TeamData> {
   const date = parseDate(value || dateOf(c.now)),
     users = (await c.m.find(Users)).map(publicUser),
     records = await c.m.findBy(Attendances, { workDate: date }),
-    requests = await c.m.findBy(Requests, { date }),
+    requests = await c.m.findBy(Requests, { date, status: 'APPROVED' }),
     open = await c.m.findBy(Attendances, { checkOut: IsNull(), workDate: LessThanOrEqual(date) });
   const missing = open.filter((a) => a.workDate < dateOf(c.now));
   const rows: TeamRow[] = users.map((user) => {

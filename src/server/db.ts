@@ -48,8 +48,11 @@ export const Requests = new EntitySchema<WorkRequest>({
     startTime: { type: String, nullable: true },
     endTime: { type: String, nullable: true },
     createdAt: { type: String },
+    status: { type: String, default: 'APPROVED' },
+    reviewedBy: { type: Number, nullable: true },
+    reviewedAt: { type: String, nullable: true },
+    reviewNote: { type: String, nullable: true },
   },
-  uniques: [{ columns: ['userId', 'date'] }],
 });
 export const Entries = new EntitySchema<BalanceEntry>({
   name: 'Entry',
@@ -144,6 +147,34 @@ class UnifiedLeave1760000001000 {
     throw new Error('Half-day data cannot be losslessly downgraded. Restore a database backup.');
   }
 }
+export class LeaveApproval1760000002000 {
+  name = 'LeaveApproval1760000002000';
+  async up(runner: import('typeorm').QueryRunner) {
+    await runner.query('PRAGMA defer_foreign_keys = ON');
+    await runner.query('ALTER TABLE requests RENAME TO requests_before_approval');
+    await runner.query(
+      `CREATE TABLE requests(id INTEGER PRIMARY KEY AUTOINCREMENT,userId INTEGER NOT NULL REFERENCES users(id),kind TEXT NOT NULL CHECK(kind IN ('ANNUAL','HALF_AM','HALF_PM','REMOTE','HOLIDAY')),date TEXT NOT NULL,reason TEXT NOT NULL,ip TEXT,startTime TEXT,endTime TEXT,createdAt TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'APPROVED' CHECK(status IN ('PENDING','APPROVED','REJECTED')),reviewedBy INTEGER REFERENCES users(id),reviewedAt TEXT,reviewNote TEXT)`,
+    );
+    await runner.query(
+      `INSERT INTO requests(id,userId,kind,date,reason,ip,startTime,endTime,createdAt) SELECT id,userId,kind,date,reason,ip,startTime,endTime,createdAt FROM requests_before_approval`,
+    );
+    await runner.query(
+      `CREATE UNIQUE INDEX request_active_day ON requests(userId,date) WHERE status IN ('PENDING','APPROVED')`,
+    );
+    await runner.query('ALTER TABLE balance_entries RENAME TO balance_before_approval');
+    await runner.query(
+      `CREATE TABLE balance_entries(id INTEGER PRIMARY KEY AUTOINCREMENT,userId INTEGER NOT NULL REFERENCES users(id),kind TEXT NOT NULL CHECK(kind IN ('ANNUAL','HOLIDAY')),amount INTEGER NOT NULL CHECK(amount IN (2,1,-1,-2)),sourceKey TEXT NOT NULL UNIQUE,grantId INTEGER REFERENCES balance_entries(id),requestId INTEGER REFERENCES requests(id),grantedDate TEXT NOT NULL,expiresDate TEXT)`,
+    );
+    await runner.query(
+      'INSERT INTO balance_entries SELECT * FROM balance_before_approval ORDER BY id',
+    );
+    await runner.query('DROP TABLE balance_before_approval');
+    await runner.query('DROP TABLE requests_before_approval');
+  }
+  async down() {
+    throw new Error('Approval history cannot be losslessly downgraded. Restore a database backup.');
+  }
+}
 export function hashPassword(password: string): string {
   const salt = randomBytes(16).toString('hex');
   return `${salt}:${scryptSync(password, salt, 32).toString('hex')}`;
@@ -162,7 +193,7 @@ export async function createDatabase(path: string): Promise<DataSource> {
     type: 'better-sqlite3',
     database: path,
     entities: [Users, Attendances, Requests, Entries, Logs, Holidays, Settings],
-    migrations: [InitialSchema1760000000000, UnifiedLeave1760000001000],
+    migrations: [InitialSchema1760000000000, UnifiedLeave1760000001000, LeaveApproval1760000002000],
     migrationsRun: true,
     synchronize: false,
     prepareDatabase: (raw) => {

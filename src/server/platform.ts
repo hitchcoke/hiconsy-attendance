@@ -53,7 +53,11 @@ export class Platform {
   }
   async allowed(m: EntityManager, ip: string, now: Date, userId?: number): Promise<boolean> {
     if (this.office.has(ip)) return true;
-    const requests = await m.findBy(Requests, { date: dateOf(now), ...(userId ? { userId } : {}) });
+    const requests = await m.findBy(Requests, {
+      date: dateOf(now),
+      status: 'APPROVED',
+      ...(userId ? { userId } : {}),
+    });
     return requests.some(
       (r) =>
         r.ip === ip &&

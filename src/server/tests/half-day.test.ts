@@ -5,6 +5,7 @@ import { DataSource } from 'typeorm';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { approvePending } from './approval-helpers';
 import { createApp } from '../app';
 import {
   Users,
@@ -62,6 +63,7 @@ test('morning half-day starts after lunch; exact 12:30 is on time and four hours
     await post('requests', { kind: 'HALF_AM', date: '2026-03-13', reason: '오전 휴가' }).expect(
       201,
     );
+    await approvePending(a);
     await set('12:29:59');
     assert.equal((await post('attendance/check-in')).body.code, 'MORNING_LEAVE');
     await set('12:30:00');
@@ -100,6 +102,7 @@ test('afternoon half-day ends at lunch; later checkout cannot count afternoon ho
         { key: 'demoNow' },
         { value: new Date(`2026-03-13T${time}+09:00`).toISOString() },
       );
+    await approvePending(a);
     await set('07:30:00');
     await post(kim, 'attendance/check-in').expect(201);
     await set('09:00:00');
@@ -132,6 +135,7 @@ test('morning half-day lateness uses 12:30, including manual checkout', async ()
     await post('requests', { kind: 'HALF_AM', date: '2026-03-13', reason: '오전 휴가' }).expect(
       201,
     );
+    await approvePending(a);
     await a.db.manager.update(Settings, { key: 'demoNow' }, { value: '2026-03-13T03:30:00.001Z' });
     const row = await post('attendance/check-in').expect(201);
     assert.equal(row.body.late, true);
@@ -207,6 +211,7 @@ test('legacy database migrates annual units, OFF requests and foreign keys witho
     assert.equal((await a.db.manager.findOneByOrFail(Entries, { id: 1 })).amount, 2);
     assert.equal((await a.db.manager.findOneByOrFail(Entries, { id: 2 })).amount, -2);
     assert.equal((await a.db.manager.findOneByOrFail(Requests, { id: 2 })).kind, 'HALF_PM');
+    assert.equal((await a.db.manager.findOneByOrFail(Requests, { id: 2 })).status, 'APPROVED');
     assert.equal((await a.db.manager.findOneByOrFail(Attendances, { id: 1 })).workSeconds, 14400);
     assert.deepEqual(await a.db.query('PRAGMA foreign_key_check'), []);
   } finally {
