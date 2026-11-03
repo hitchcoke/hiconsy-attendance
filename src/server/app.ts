@@ -7,6 +7,8 @@ import { Calendar } from './rules';
 import type { Request } from 'express';
 import { gateway, loginGateway } from './gateway';
 import { balances } from './balances';
+import { Requests } from './db';
+import { createRequest,options } from './requests';
 @Catch()
 class ErrorFilter implements ExceptionFilter {
   catch(error:unknown,host:ArgumentsHost) {
@@ -20,6 +22,9 @@ class ApiController {
   constructor(@Inject(Platform) private platform:Platform) {}
   @Post('auth/login') login(@Req() req:Request) {return loginGateway(this.platform,req);}
   @Post('auth/logout') logout(@Req() req:Request) {return gateway(this.platform,req,'LOGOUT',async()=>{this.platform.sessions.delete((req.headers.authorization||'').replace(/^Bearer /,''));return {ok:true};});}
+  @Get('requests') requests(@Req() req:Request) {return gateway(this.platform,req,'REQUEST_LIST',c=>c.m.find(Requests,{where:{userId:c.user.id},order:{date:'DESC'}}));}
+  @Post('requests') request(@Req() req:Request) {return gateway(this.platform,req,'REQUEST_CREATE',c=>createRequest(c,this.platform.calendar,req.body));}
+  @Get('request-options') requestOptions(@Req() req:Request) {return gateway(this.platform,req,'REQUEST_OPTIONS',async c=>options(c,this.platform.calendar,req.query.date));}
   @Get('balances') balance(@Req() req:Request) {return gateway(this.platform,req,'BALANCES',balances);}
   @Get('me') me(@Req() req:Request) {return gateway(this.platform,req,'PROFILE',async c=>c.user);}
   @Get('clock') clock(@Req() req:Request) {return gateway(this.platform,req,'CLOCK',async c=>({now:c.now.toISOString(),demo:this.platform.demo}));}
