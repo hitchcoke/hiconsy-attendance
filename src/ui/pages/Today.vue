@@ -25,7 +25,8 @@ const status = computed(() =>
 const progress = computed(() =>
   Math.min(
     100,
-    ((value.value?.workSeconds || 0) / (value.value?.attendance?.mode === 'OFF' ? 14400 : 28800)) *
+    ((value.value?.workSeconds || 0) /
+      (value.value?.attendance?.mode.startsWith('HALF_') ? 14400 : 28800)) *
       100,
   ),
 );
@@ -135,7 +136,9 @@ onUnmounted(() => {
           ><span
             >목표
             {{
-              value.attendance?.mode === 'OFF' || value.request?.kind === 'OFF' ? '4' : '8'
+              value.attendance?.mode.startsWith('HALF_') || value.request?.kind.startsWith('HALF_')
+                ? '4'
+                : '8'
             }}시간</span
           >
         </div>

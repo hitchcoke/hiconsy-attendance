@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue';
+import { ref, reactive, onMounted, watch, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Plus, Refresh } from '@element-plus/icons-vue';
 import { api } from '../api';
@@ -25,11 +25,28 @@ const form = reactive({
   endTime: '20:00',
 });
 const types = [
-  { kind: 'ANNUAL' as const, icon: '☀', hint: '연차 1일 사용' },
-  { kind: 'REMOTE' as const, icon: '⌂', hint: '월 2회' },
-  { kind: 'OFF' as const, icon: '◷', hint: '휴일 근무로 얻은 반일' },
-  { kind: 'HOLIDAY' as const, icon: '▦', hint: '주말·공휴일 근무' },
+  {
+    kind: 'ANNUAL' as const,
+    value: 'LEAVE',
+    label: '연차·반차',
+    icon: '☀',
+    hint: '1일 / 오전·오후 0.5일',
+  },
+  { kind: 'REMOTE' as const, value: 'REMOTE', label: '재택근무', icon: '⌂', hint: '월 2회' },
+  {
+    kind: 'HOLIDAY' as const,
+    value: 'HOLIDAY',
+    label: '휴일 근무',
+    icon: '▦',
+    hint: '주말·공휴일 근무',
+  },
 ];
+const category = computed({
+  get: () => (['ANNUAL', 'HALF_AM', 'HALF_PM'].includes(form.kind) ? 'LEAVE' : form.kind),
+  set: (value: string) => {
+    form.kind = value === 'LEAVE' ? 'ANNUAL' : (value as RequestKind);
+  },
+});
 async function load() {
   loading.value = true;
   error.value = '';
@@ -99,7 +116,7 @@ onMounted(load);
   <div class="request-types">
     <button v-for="t in types" :key="t.kind" @click="open(t.kind)">
       <span>{{ t.icon }}</span
-      ><strong>{{ kindLabel[t.kind] }}</strong
+      ><strong>{{ t.label }}</strong
       ><small>{{ t.hint }}</small
       ><b>→</b>
     </button>
@@ -128,6 +145,8 @@ onMounted(load);
           ><span v-if="row.ip"
             >{{ row.ip
             }}<small class="cell-sub">{{ row.startTime }} ~ {{ row.endTime }}</small></span
+          ><span v-else-if="row.kind === 'HALF_AM'" class="muted">오전 휴가 · 12:30 출근</span
+          ><span v-else-if="row.kind === 'HALF_PM'" class="muted">오후 휴가 · 11:30 퇴근</span
           ><span v-else class="muted">—</span></template
         ></el-table-column
       ><el-table-column label="상태" width="80"
@@ -145,13 +164,23 @@ onMounted(load);
   <el-dialog v-model="dialog" title="새 신청" width="540px" :close-on-click-modal="!busy"
     ><form @submit.prevent="submit" class="request-form">
       <label>신청 종류</label
-      ><el-select v-model="form.kind" style="width: 100%"
-        ><el-option
-          v-for="t in types"
-          :key="t.kind"
-          :label="kindLabel[t.kind]"
-          :value="t.kind" /></el-select
-      ><label for="request-date">사용일</label
+      ><el-select v-model="category" style="width: 100%"
+        ><el-option v-for="t in types" :key="t.kind" :label="t.label" :value="t.value" /></el-select
+      ><template v-if="category === 'LEAVE'">
+        <label>사용 단위</label>
+        <el-radio-group v-model="form.kind" aria-label="휴가 사용 단위" class="leave-period">
+          <el-radio-button value="ANNUAL">연차 · 1일</el-radio-button>
+          <el-radio-button value="HALF_AM">오전 반차 · 0.5일</el-radio-button>
+          <el-radio-button value="HALF_PM">오후 반차 · 0.5일</el-radio-button>
+        </el-radio-group>
+        <p v-if="form.kind === 'HALF_AM'" class="field-hint">
+          점심 종료 후 12:30부터 근무합니다. 12:30~16:30 근무 시 4시간입니다.
+        </p>
+        <p v-else-if="form.kind === 'HALF_PM'" class="field-hint">
+          점심 시작인 11:30까지 근무합니다. 07:30~11:30 근무 시 4시간입니다.
+        </p>
+      </template>
+      <label for="request-date">사용일</label
       ><input
         id="request-date"
         v-model="form.date"
@@ -211,7 +240,7 @@ onMounted(load);
 }
 .request-types {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   margin: 22px 0;
 }
