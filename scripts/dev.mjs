@@ -1,44 +1,70 @@
 import { spawn } from 'node:child_process';
-const children = [];
-function run(command, args, env = {}) {
+import { createServer } from 'node:net';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url),
+  children = [];
+let stopping = false;
+function stop(code = 0) {
+  if (stopping) return;
+  stopping = true;
+  for (const child of children) child.kill('SIGTERM');
+  process.exitCode = code;
+}
+function run(command, args, env = {}, persistent = false) {
   const child = spawn(command, args, { stdio: 'inherit', env: { ...process.env, ...env } });
   children.push(child);
+  child.on('error', (error) => {
+    console.error(error.message);
+    stop(1);
+  });
+  if (persistent)
+    child.on('exit', (code) => {
+      if (!stopping) stop(code || 0);
+    });
   return child;
 }
-function once(command, args) {
-  return new Promise((resolve, reject) =>
-    run(command, args).on('exit', (code) =>
-      code === 0 ? resolve() : reject(new Error(`${command} failed: ${code}`)),
+async function assertFree(port) {
+  await new Promise((resolve, reject) => {
+    const socket = createServer();
+    socket.once('error', () =>
+      reject(new Error(`${port} 포트가 사용 중입니다. 기존 서버를 종료하세요.`)),
+    );
+    socket.listen(port, '127.0.0.1', () => socket.close(resolve));
+  });
+}
+async function ready(url) {
+  for (let i = 0; i < 100; i++) {
+    try {
+      await fetch(url, { signal: AbortSignal.timeout(500) });
+      return;
+    } catch {
+      if (stopping) throw new Error('개발 프로세스가 종료되었습니다.');
+      await new Promise((r) => setTimeout(r, 200));
+    }
+  }
+  throw new Error(`서버 시작 시간 초과: ${url}`);
+}
+process.on('SIGINT', () => stop());
+process.on('SIGTERM', () => stop());
+try {
+  await Promise.all([assertFree(3000), assertFree(5173)]);
+  await new Promise((resolve, reject) =>
+    run(process.execPath, ['node_modules/typescript/lib/tsc.js', '-p', 'tsconfig.server.json']).on(
+      'exit',
+      (code) => (code === 0 ? resolve() : reject(new Error('서버 빌드 실패'))),
     ),
   );
+  run(process.execPath, ['--env-file=.env.demo', '--watch', 'dist/server/main.js'], {}, true);
+  run(
+    process.execPath,
+    ['node_modules/typescript/lib/tsc.js', '-p', 'tsconfig.server.json', '--watch'],
+    {},
+    true,
+  );
+  run(process.execPath, ['node_modules/vite/bin/vite.js', '--host', '127.0.0.1'], {}, true);
+  await Promise.all([ready('http://127.0.0.1:3000/api/clock'), ready('http://127.0.0.1:5173')]);
+  run(require('electron'), ['.'], { VITE_DEV_SERVER_URL: 'http://127.0.0.1:5173' }, true);
+} catch (error) {
+  console.error(error.message);
+  stop(1);
 }
-function stop() {
-  for (const child of children) child.kill('SIGTERM');
-}
-process.on('SIGINT', () => {
-  stop();
-  process.exit();
-});
-process.on('SIGTERM', () => {
-  stop();
-  process.exit();
-});
-await once('npm', ['run', 'build:server']);
-run(process.execPath, ['--env-file=.env.demo', '--watch', 'dist/server/main.js']);
-run('npm', ['exec', '--', 'tsc', '-p', 'tsconfig.server.json', '--watch']);
-run('npm', ['run', 'dev:web']);
-for (let attempt = 0; attempt < 100; attempt++) {
-  try {
-    await fetch('http://127.0.0.1:5173');
-    break;
-  } catch {
-    await new Promise((r) => setTimeout(r, 200));
-  }
-}
-const desktop = run('npm', ['exec', '--', 'electron', '.'], {
-  VITE_DEV_SERVER_URL: 'http://127.0.0.1:5173',
-});
-desktop.on('exit', () => {
-  stop();
-  process.exit();
-});
