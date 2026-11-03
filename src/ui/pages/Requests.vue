@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { Plus, Refresh } from '@element-plus/icons-vue';
 import { api } from '../api';
@@ -7,7 +8,19 @@ import type { WorkRequest, RequestKind, RequestOptions, Balances } from '../../s
 import { useSession } from '../store';
 import { kindLabel, datetime, requestStatusLabel } from '../format';
 import BalanceCards from '../components/BalanceCards.vue';
-const session = useSession();
+const session = useSession(),
+  route = useRoute(),
+  router = useRouter();
+const fromCalendar = computed(
+  () =>
+    route.query.from === 'calendar' &&
+    typeof route.query.date === 'string' &&
+    /^2026-\d{2}-\d{2}$/.test(route.query.date),
+);
+function backToCalendar() {
+  const date = typeof route.query.date === 'string' ? route.query.date : '';
+  return router.push({ path: '/calendar', query: { month: date.slice(0, 7), date } });
+}
 const rows = ref<WorkRequest[]>([]),
   balance = ref<Balances>(),
   loading = ref(false),
@@ -97,14 +110,25 @@ async function submit() {
     ElMessage.success(
       result.status === 'PENDING' ? '리드에게 승인을 요청했습니다.' : '신청이 확정되었습니다.',
     );
-    await load();
+    if (fromCalendar.value) {
+      await router.push({
+        path: '/calendar',
+        query: { month: form.date.slice(0, 7), date: form.date },
+      });
+    } else await load();
   } catch (e) {
     formError.value = (e as Error).message;
   } finally {
     busy.value = false;
   }
 }
-onMounted(load);
+onMounted(async () => {
+  await load();
+  if (fromCalendar.value) {
+    form.date = route.query.date as string;
+    open(route.query.kind === 'HOLIDAY' ? 'HOLIDAY' : 'ANNUAL');
+  }
+});
 </script>
 <template>
   <div class="page-heading">
@@ -112,6 +136,9 @@ onMounted(load);
       <h1 class="mt-small">신청</h1>
     </div>
     <el-button type="primary" :icon="Plus" @click="open()">새 신청</el-button>
+  </div>
+  <div v-if="fromCalendar" class="calendar-return">
+    <el-button text @click="backToCalendar">← 캘린더로 돌아가기</el-button>
   </div>
   <el-alert v-if="error" :title="error" type="error" :closable="false" /><BalanceCards
     v-if="balance"
@@ -268,6 +295,9 @@ onMounted(load);
   >
 </template>
 <style scoped>
+.calendar-return {
+  margin: -12px 0 8px;
+}
 .mt-small {
   margin-top: 10px;
 }
