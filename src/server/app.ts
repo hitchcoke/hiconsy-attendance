@@ -10,6 +10,7 @@ import { balances } from './balances';
 import { Requests } from './db';
 import { createRequest,options } from './requests';
 import { today,checkIn,checkOut } from './attendance';
+import { history,detail,correct,positiveId } from './history';
 @Catch()
 class ErrorFilter implements ExceptionFilter {
   catch(error:unknown,host:ArgumentsHost) {
@@ -23,6 +24,9 @@ class ApiController {
   constructor(@Inject(Platform) private platform:Platform) {}
   @Post('auth/login') login(@Req() req:Request) {return loginGateway(this.platform,req);}
   @Post('auth/logout') logout(@Req() req:Request) {return gateway(this.platform,req,'LOGOUT',async()=>{this.platform.sessions.delete((req.headers.authorization||'').replace(/^Bearer /,''));return {ok:true};});}
+  @Get('attendance') history(@Req() req:Request) {return gateway(this.platform,req,'HISTORY',c=>history(c,req.query));}
+  @Get('attendance/:id') detail(@Req() req:Request) {return gateway(this.platform,req,'HISTORY_DETAIL',c=>detail(c,positiveId(req.params.id)));}
+  @Post('attendance/:id/correct') correct(@Req() req:Request) {return gateway(this.platform,req,'ATTENDANCE_CORRECT',c=>correct(c,this.platform.calendar,positiveId(req.params.id),req.body?.checkOut));}
   @Get('today') today(@Req() req:Request) {return gateway(this.platform,req,'TODAY',c=>today(c,this.platform.calendar,this.platform.demo));}
   @Post('attendance/check-in') checkIn(@Req() req:Request) {return gateway(this.platform,req,'ATTENDANCE_CHECK_IN',c=>checkIn(c,this.platform.calendar));}
   @Post('attendance/check-out') checkOut(@Req() req:Request) {return gateway(this.platform,req,'ATTENDANCE_CHECK_OUT',c=>checkOut(c,this.platform.calendar));}
