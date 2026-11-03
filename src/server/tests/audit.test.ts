@@ -1,2 +1,26 @@
-import {test} from 'node:test';import assert from 'node:assert/strict';import request from 'supertest';import {createApp} from '../app';import {Logs,Requests} from '../db';
-test('successful writes are audited with target; failed requests roll back and are audited',async()=>{const a=await createApp({path:':memory:',demo:true});try{const h=request(a.app.getHttpServer());const l=await h.post('/api/auth/login').send({login:'kim',password:'demo1234'});const post=(kind:string)=>h.post('/api/requests').auth(l.body.token,{type:'bearer'}).send({kind,date:'2026-03-13',reason:'private note'});const good=await post('ANNUAL').expect(201);await post('ANNUAL').expect(409);const logs=await a.db.manager.find(Logs);assert.ok(logs.some(x=>x.target===`request:${good.body.id}`&&x.result==='SUCCESS'));assert.ok(logs.some(x=>x.code==='DUPLICATE_REQUEST'&&x.result==='FAILURE'));assert.equal(await a.db.manager.count(Requests),1);assert.ok(!JSON.stringify(logs).includes('private note'));}finally{await a.close();}});
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import request from 'supertest';
+import { createApp } from '../app';
+import { Logs, Requests } from '../db';
+test('successful writes are audited with target; failed requests roll back and are audited', async () => {
+  const a = await createApp({ path: ':memory:', demo: true });
+  try {
+    const h = request(a.app.getHttpServer());
+    const l = await h.post('/api/auth/login').send({ login: 'kim', password: 'demo1234' });
+    const post = (kind: string) =>
+      h
+        .post('/api/requests')
+        .auth(l.body.token, { type: 'bearer' })
+        .send({ kind, date: '2026-03-13', reason: 'private note' });
+    const good = await post('ANNUAL').expect(201);
+    await post('ANNUAL').expect(409);
+    const logs = await a.db.manager.find(Logs);
+    assert.ok(logs.some((x) => x.target === `request:${good.body.id}` && x.result === 'SUCCESS'));
+    assert.ok(logs.some((x) => x.code === 'DUPLICATE_REQUEST' && x.result === 'FAILURE'));
+    assert.equal(await a.db.manager.count(Requests), 1);
+    assert.ok(!JSON.stringify(logs).includes('private note'));
+  } finally {
+    await a.close();
+  }
+});

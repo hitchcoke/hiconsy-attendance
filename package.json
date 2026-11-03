@@ -7,7 +7,9 @@
   "license": "UNLICENSED",
   "private": true,
   "main": "electron/main.cjs",
-  "engines": { "node": ">=24.11 <25" },
+  "engines": {
+    "node": ">=24.11 <25"
+  },
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "dev:web": "vite --host 127.0.0.1",
@@ -20,7 +22,11 @@
     "demo:reset": "npm run build:server && node --env-file=.env.demo dist/server/cli.js reset",
     "test": "npm run build:server && node --test --test-concurrency=1 dist/server/tests/*.test.js",
     "package": "npm run build && electron-forge package",
-    "make": "npm run build && electron-forge make"
+    "make": "npm run build && electron-forge make",
+    "postinstall": "node node_modules/electron/install.js",
+    "format": "prettier --write \"src/**/*.{ts,vue,css}\" \"electron/*.cjs\" \"scripts/*.mjs\" \"*.{json,mts,cjs}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,vue,css}\" \"electron/*.cjs\" \"scripts/*.mjs\" \"*.{json,mts,cjs}\"",
+    "test:ui": "npm run build && node scripts/ui-smoke.mjs"
   },
   "devDependencies": {
     "@electron-forge/cli": "8.0.1",
@@ -39,6 +45,7 @@
     "element-plus": "^2.11.0",
     "pinia": "^3.0.0",
     "playwright": "^1.56.0",
+    "prettier": "3.6.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "supertest": "^7.1.0",

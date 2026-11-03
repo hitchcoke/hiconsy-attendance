@@ -1,10 +1,137 @@
 <script setup lang="ts">
-import { ref,computed } from 'vue';import { useSession } from '../store';import { api } from '../api';import { datetime } from '../format';import { ElMessage } from 'element-plus';
-const emit=defineEmits<{changed:[]}>(),session=useSession(),open=ref(false),next=ref(''),error=ref(''),busy=ref(false);
-const localNow=computed(()=>session.clock?new Date(new Date(session.clock.now).getTime()+9*3600000).toISOString().slice(0,16):'');
-function show(){next.value=localNow.value;error.value='';open.value=true;}
-async function save(){busy.value=true;error.value='';try{await api('/demo/clock',{now:next.value+':00+09:00'});await session.refreshClock();open.value=false;ElMessage.success('시연 시각을 변경했습니다.');emit('changed');}catch(e){error.value=(e as Error).message;}finally{busy.value=false;}}
-function quick(hours:number){next.value=new Date(new Date(session.clock!.now).getTime()+(hours+9)*3600000).toISOString().slice(0,16);}
+import { ref, computed } from 'vue';
+import { useSession } from '../store';
+import { api } from '../api';
+import { datetime } from '../format';
+import { ElMessage } from 'element-plus';
+const emit = defineEmits<{ changed: [] }>(),
+  session = useSession(),
+  open = ref(false),
+  next = ref(''),
+  error = ref(''),
+  busy = ref(false);
+const localNow = computed(() =>
+  session.clock
+    ? new Date(new Date(session.clock.now).getTime() + 9 * 3600000).toISOString().slice(0, 16)
+    : '',
+);
+function show() {
+  next.value = localNow.value;
+  error.value = '';
+  open.value = true;
+}
+async function save() {
+  busy.value = true;
+  error.value = '';
+  try {
+    await api('/demo/clock', { now: next.value + ':00+09:00' });
+    await session.refreshClock();
+    open.value = false;
+    ElMessage.success('시연 시각을 변경했습니다.');
+    emit('changed');
+  } catch (e) {
+    error.value = (e as Error).message;
+  } finally {
+    busy.value = false;
+  }
+}
+function quick(hours: number) {
+  next.value = new Date(new Date(session.clock!.now).getTime() + (hours + 9) * 3600000)
+    .toISOString()
+    .slice(0, 16);
+}
 </script>
-<template><aside v-if="session.clock?.demo" class="demo-panel"><div><span class="demo-badge">DEMO</span><span>시연 시각 <strong>{{datetime(session.clock.now)}}</strong></span></div><el-button v-if="session.user?.role==='LEAD'" text size="small" @click="show">시각 변경 →</el-button><small v-else>리드 계정에서 시각을 변경할 수 있어요</small></aside><el-dialog v-model="open" title="시연 시각 변경" width="460px" :close-on-click-modal="!busy"><p class="muted">출퇴근·신청·잔여는 아래 서버 시각을 기준으로 동작합니다. 실제 컴퓨터 시각은 바뀌지 않습니다.</p><label for="demo-time" class="demo-label">현재 이후의 시각 (한국 시각)</label><input id="demo-time" v-model="next" type="datetime-local" :min="localNow" max="2026-12-31T23:59" class="demo-input"/><div class="quick-buttons"><el-button size="small" @click="quick(1)">1시간 후</el-button><el-button size="small" @click="quick(9)">9시간 후</el-button><el-button size="small" @click="quick(24)">다음 날</el-button></div><p class="demo-help">과거로 돌아가려면 서버를 종료하고 <code>npm run demo:reset</code>으로 시연 데이터를 초기화하세요.</p><el-alert v-if="error" :title="error" type="error" :closable="false" class="mt"/><template #footer><el-button :disabled="busy" @click="open=false">닫기</el-button><el-button type="primary" :loading="busy" :disabled="!next" @click="save">시각 적용</el-button></template></el-dialog></template>
-<style scoped>.demo-panel{margin-top:28px;border:1px dashed #dce2ee;border-radius:10px;padding:12px 17px;display:flex;align-items:center;justify-content:space-between;color:#a0aabd;font-size:10px}.demo-panel>div{display:flex;align-items:center;gap:12px}.demo-panel strong{font-weight:500;margin-left:7px;color:#8a97ae}.demo-panel small{font-size:9px}.demo-panel .el-button{font-size:10px;color:#8a98b1}.demo-label{display:block;font-size:12px;margin:25px 0 10px}.demo-input{width:100%;border:1px solid #dce4ef;border-radius:8px;padding:11px;color:#566780}.quick-buttons{margin-top:14px}.demo-help{font-size:11px;color:#9eabc0;line-height:1.8;margin-top:22px}</style>
+<template>
+  <aside v-if="session.clock?.demo" class="demo-panel">
+    <div>
+      <span class="demo-badge">DEMO</span
+      ><span
+        >시연 시각 <strong>{{ datetime(session.clock.now) }}</strong></span
+      >
+    </div>
+    <el-button v-if="session.user?.role === 'LEAD'" text size="small" @click="show"
+      >시각 변경 →</el-button
+    ><small v-else>리드 계정에서 시각을 변경할 수 있어요</small>
+  </aside>
+  <el-dialog v-model="open" title="시연 시각 변경" width="460px" :close-on-click-modal="!busy"
+    ><p class="muted">
+      출퇴근·신청·잔여는 아래 서버 시각을 기준으로 동작합니다. 실제 컴퓨터 시각은 바뀌지 않습니다.
+    </p>
+    <label for="demo-time" class="demo-label">현재 이후의 시각 (한국 시각)</label
+    ><input
+      id="demo-time"
+      v-model="next"
+      type="datetime-local"
+      :min="localNow"
+      max="2026-12-31T23:59"
+      class="demo-input"
+    />
+    <div class="quick-buttons">
+      <el-button size="small" @click="quick(1)">1시간 후</el-button
+      ><el-button size="small" @click="quick(9)">9시간 후</el-button
+      ><el-button size="small" @click="quick(24)">다음 날</el-button>
+    </div>
+    <p class="demo-help">
+      과거로 돌아가려면 서버를 종료하고 <code>npm run demo:reset</code>으로 시연 데이터를
+      초기화하세요.
+    </p>
+    <el-alert v-if="error" :title="error" type="error" :closable="false" class="mt" /><template
+      #footer
+      ><el-button :disabled="busy" @click="open = false">닫기</el-button
+      ><el-button type="primary" :loading="busy" :disabled="!next" @click="save"
+        >시각 적용</el-button
+      ></template
+    ></el-dialog
+  >
+</template>
+<style scoped>
+.demo-panel {
+  margin-top: 28px;
+  border: 1px dashed #dce2ee;
+  border-radius: 10px;
+  padding: 12px 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #a0aabd;
+  font-size: 10px;
+}
+.demo-panel > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.demo-panel strong {
+  font-weight: 500;
+  margin-left: 7px;
+  color: #8a97ae;
+}
+.demo-panel small {
+  font-size: 9px;
+}
+.demo-panel .el-button {
+  font-size: 10px;
+  color: #8a98b1;
+}
+.demo-label {
+  display: block;
+  font-size: 12px;
+  margin: 25px 0 10px;
+}
+.demo-input {
+  width: 100%;
+  border: 1px solid #dce4ef;
+  border-radius: 8px;
+  padding: 11px;
+  color: #566780;
+}
+.quick-buttons {
+  margin-top: 14px;
+}
+.demo-help {
+  font-size: 11px;
+  color: #9eabc0;
+  line-height: 1.8;
+  margin-top: 22px;
+}
+</style>
