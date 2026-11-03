@@ -1,0 +1,9 @@
+node_modules/
+dist/
+out/
+data/
+.env
+.idea/
+.DS_Store
+*.log
+artifacts/
