@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-03T08:56:58.547Z",
+  "generatedAt": "2026-11-03T09:19:22.320Z",
   "repository": "https://github.com/hitchcoke/hiconsy-attendance",
   "ref": "main",
-  "head": "50e76e8e8499d9b0f1b851c73260dae3a86e8894",
+  "head": "685f0340c0a84fca72757f46ed3d985d374a4468",
   "tasks": [
     {
       "id": "T00",
@@ -334,15 +334,32 @@
       "branches": [
         {
           "name": "task/T21-calendar-regression",
-          "sha": "50e76e8e8499d9b0f1b851c73260dae3a86e8894"
+          "sha": "1532ad0f6bc12a0400380bec6bf18f64eb3d1c63"
         }
       ],
       "commits": [
         "a80aec3245f07bf98f948673e138ce75a1c3214c",
-        "735b13e7e3e5f923b17f7cf43add794bbcdea647"
+        "735b13e7e3e5f923b17f7cf43add794bbcdea647",
+        "1532ad0f6bc12a0400380bec6bf18f64eb3d1c63"
       ],
       "merges": [
-        "50e76e8e8499d9b0f1b851c73260dae3a86e8894"
+        "50e76e8e8499d9b0f1b851c73260dae3a86e8894",
+        "882d63109109db3123713e16ab52f50d52b87756"
+      ]
+    },
+    {
+      "id": "T22",
+      "branches": [
+        {
+          "name": "task/T22-readme-retrospective",
+          "sha": "685f0340c0a84fca72757f46ed3d985d374a4468"
+        }
+      ],
+      "commits": [
+        "a8ea01d952e1f5e2aaa2de3f12fb2f0a9a6817a3"
+      ],
+      "merges": [
+        "685f0340c0a84fca72757f46ed3d985d374a4468"
       ]
     }
   ],
@@ -433,7 +450,11 @@
     },
     {
       "name": "task/T21-calendar-regression",
-      "sha": "50e76e8e8499d9b0f1b851c73260dae3a86e8894"
+      "sha": "1532ad0f6bc12a0400380bec6bf18f64eb3d1c63"
+    },
+    {
+      "name": "task/T22-readme-retrospective",
+      "sha": "685f0340c0a84fca72757f46ed3d985d374a4468"
     }
   ],
   "commits": [
@@ -1037,6 +1058,48 @@
       "author": "hitchcoke",
       "date": "2026-11-03T17:56:51+09:00",
       "subject": "merge(T21): calendar regression and submission evidence",
+      "merge": true
+    },
+    {
+      "sha": "1532ad0f6bc12a0400380bec6bf18f64eb3d1c63",
+      "parents": [
+        "50e76e8e8499d9b0f1b851c73260dae3a86e8894"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:56:58+09:00",
+      "subject": "docs(T21): snapshot actual calendar task commits and merges",
+      "merge": false
+    },
+    {
+      "sha": "882d63109109db3123713e16ab52f50d52b87756",
+      "parents": [
+        "50e76e8e8499d9b0f1b851c73260dae3a86e8894",
+        "1532ad0f6bc12a0400380bec6bf18f64eb3d1c63"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T17:56:58+09:00",
+      "subject": "merge(T21): publish calendar task history",
+      "merge": true
+    },
+    {
+      "sha": "a8ea01d952e1f5e2aaa2de3f12fb2f0a9a6817a3",
+      "parents": [
+        "882d63109109db3123713e16ab52f50d52b87756"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T18:19:22+09:00",
+      "subject": "docs(T22): explain development tradeoffs and calendar integration plans",
+      "merge": false
+    },
+    {
+      "sha": "685f0340c0a84fca72757f46ed3d985d374a4468",
+      "parents": [
+        "882d63109109db3123713e16ab52f50d52b87756",
+        "a8ea01d952e1f5e2aaa2de3f12fb2f0a9a6817a3"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T18:19:22+09:00",
+      "subject": "merge(T22): README development retrospective",
       "merge": true
     }
   ]
