@@ -38,6 +38,7 @@ export const useSession = defineStore('session', () => {
     }
   }
   function clear() {
+    sessionStorage.removeItem('token');
     user.value = null;
     clock.value = null;
   }

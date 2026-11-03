@@ -191,3 +191,49 @@ test('releasing holiday-backed leave preserves expiry and does not create a new 
     await s.app.close();
   }
 });
+
+test('pending state, review reason and refund ledger survive server restart', async () => {
+  const { mkdtempSync, rmSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const dir = mkdtempSync(join(tmpdir(), 'hiconsy-approval-'));
+  let app = await createApp({ path: join(dir, 'test.sqlite'), demo: true });
+  try {
+    let http = request(app.app.getHttpServer());
+    const kim = (await http.post('/api/auth/login').send({ login: 'kim', password: 'demo1234' }))
+      .body.token;
+    const created = await http
+      .post('/api/requests')
+      .auth(kim, { type: 'bearer' })
+      .send({ kind: 'HALF_AM', date: '2026-03-13', reason: '반차' })
+      .expect(201);
+    await app.close();
+    app = await createApp({ path: join(dir, 'test.sqlite'), demo: true });
+    assert.equal(
+      (await app.db.manager.findOneByOrFail(Requests, { id: created.body.id })).status,
+      'PENDING',
+    );
+    http = request(app.app.getHttpServer());
+    const lead = (await http.post('/api/auth/login').send({ login: 'lead', password: 'demo1234' }))
+      .body.token;
+    await http
+      .post(`/api/requests/${created.body.id}/review`)
+      .auth(lead, { type: 'bearer' })
+      .send({ decision: 'REJECTED', reason: '일정 변경' })
+      .expect(201);
+    await app.close();
+    app = await createApp({ path: join(dir, 'test.sqlite'), demo: true });
+    const row = await app.db.manager.findOneByOrFail(Requests, { id: created.body.id });
+    assert.equal(row.status, 'REJECTED');
+    assert.equal(row.reviewNote, '일정 변경');
+    assert.equal(row.reviewedBy, 4);
+    assert.equal(
+      (await app.db.manager.findBy(Entries, { userId: 1 })).reduce((sum, e) => sum + e.amount, 0),
+      4,
+    );
+    assert.deepEqual(await app.db.query('PRAGMA foreign_key_check'), []);
+  } finally {
+    await app.close();
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

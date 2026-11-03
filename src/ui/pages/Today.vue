@@ -22,6 +22,13 @@ const status = computed(() =>
         ? '연차 사용 중'
         : '출근 전',
 );
+const workGuide = computed(() => {
+  const mode = value.value?.attendance?.mode || value.value?.request?.kind;
+  if (mode === 'HALF_AM') return '12:30부터 출근 · 12:30까지 정상 출근 · 4시간 근무 기준';
+  if (mode === 'HALF_PM') return '11:30부터 퇴근 · 07:30~11:30 근무 시 4시간';
+  if (mode === 'ANNUAL') return '승인된 연차 사용일 · 출퇴근 등록 대상이 아닙니다.';
+  return '07시부터 출근 · 10시까지 정상 출근 · 16시부터 퇴근';
+});
 const progress = computed(() =>
   Math.min(
     100,
@@ -219,7 +226,7 @@ onUnmounted(() => {
         <span class="guide-icon">✦</span>
         <div>
           <strong>근무 기준</strong>
-          <p>07시부터 출근 · 10시까지 정상 출근 · 16시부터 퇴근</p>
+          <p>{{ workGuide }}</p>
         </div>
       </div>
       <el-button text :icon="Refresh" @click="load()">새로고침</el-button>

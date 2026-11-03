@@ -58,8 +58,32 @@ try {
   await page.getByText('근무 중', { exact: true }).waitFor();
   await screenshot('today');
   checks.push('로그인 오류/샘플 계정/팀원 메뉴/출근');
+  await page.getByRole('link', { name: '내 근태', exact: true }).click();
+  const activeRow = page.getByRole('row').filter({ hasText: '2026-03-12' });
+  await activeRow.waitFor();
+  assert.match(await activeRow.innerText(), /근무 중/);
+  assert.doesNotMatch(await activeRow.innerText(), /퇴근 미기록/);
+  checks.push('당일 근무 중과 이전 퇴근 미기록 구분');
   await page.getByRole('link', { name: '신청', exact: true }).click();
   await page.getByRole('button', { name: '새 신청', exact: true }).click();
+  let releaseDate, seenDate, doneDate;
+  const dateSeen = new Promise((resolve) => (seenDate = resolve)),
+    dateDone = new Promise((resolve) => (doneDate = resolve));
+  const datePattern = '**/request-options?date=2026-03-19';
+  await page.route(datePattern, async (route) => {
+    seenDate();
+    await new Promise((resolve) => (releaseDate = resolve));
+    await route.continue().catch(() => {});
+    doneDate();
+  });
+  await page.locator('#request-date').fill('2026-03-19');
+  await dateSeen;
+  await page.locator('#request-date').fill('');
+  await page.getByText('신청 기한 확인 중…', { exact: true }).waitFor({ state: 'hidden' });
+  releaseDate();
+  await dateDone;
+  await page.unroute(datePattern);
+  checks.push('신청 날짜 삭제 시 로딩 해제/늦은 응답 무시');
   await page.locator('#request-date').fill('2026-03-13');
   await page.locator('#request-reason').fill('개인 일정으로 연차를 사용합니다.');
   await page.getByRole('button', { name: '승인 요청', exact: true }).click();
@@ -97,6 +121,27 @@ try {
   await page.getByRole('link', { name: '휴가 승인', exact: true }).click();
   await page.getByRole('tab', { name: '승인 대기 (3)', exact: true }).waitFor();
   await screenshot('approvals-pending');
+  await desktop.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0].setSize(860, 680));
+  for (const button of await page.getByRole('button', { name: '검토', exact: true }).all()) {
+    const box = await button.boundingBox();
+    assert.ok(box && box.x >= 0 && box.x + box.width <= (await page.evaluate(() => innerWidth)));
+  }
+  await page
+    .getByRole('row')
+    .filter({ hasText: '2026-03-17' })
+    .getByRole('button', { name: '검토', exact: true })
+    .click();
+  const approveBox = await page.getByRole('button', { name: '승인', exact: true }).boundingBox();
+  assert.ok(
+    approveBox && approveBox.y + approveBox.height <= (await page.evaluate(() => innerHeight)),
+  );
+  await screenshot('approval-minimum');
+  await page.getByRole('button', { name: '닫기', exact: true }).click();
+  await desktop.evaluate(({ BrowserWindow }) =>
+    BrowserWindow.getAllWindows()[0].setSize(1280, 880),
+  );
+  checks.push('최소 창에서 승인 목록 검토 버튼/승인 폼 하단 노출');
+
   const reviewLeave = async (date, reject = false) => {
     await page
       .getByRole('row')
@@ -154,6 +199,33 @@ try {
   await page.getByRole('tab', { name: /미기록 · 직접 입력/ }).click();
   await page.getByRole('tab', { name: '팀 보드', exact: true }).click();
   checks.push('리드 팀 보드/팀원 상세/세 가지 탭');
+  let releaseTeam, seenTeam, doneTeam;
+  const teamSeen = new Promise((resolve) => (seenTeam = resolve)),
+    teamDone = new Promise((resolve) => (doneTeam = resolve));
+  const teamPattern = '**/team?date=2026-03-13';
+  await page.route(teamPattern, async (route) => {
+    seenTeam();
+    await new Promise((resolve) => (releaseTeam = resolve));
+    await route.continue().catch(() => {});
+    doneTeam();
+  });
+  await page.getByLabel('팀 현황 날짜', { exact: true }).fill('2026-03-13');
+  await teamSeen;
+  const restoredTeam = page.waitForResponse((r) => r.url().endsWith('/team?date=2026-03-12'));
+  await page.getByLabel('팀 현황 날짜', { exact: true }).fill('2026-03-12');
+  await restoredTeam;
+  const staleResponse = page.waitForResponse((r) => r.url().endsWith('/team?date=2026-03-13'));
+  releaseTeam();
+  await teamDone;
+  await staleResponse;
+  await page.unroute(teamPattern);
+  await page
+    .getByRole('row')
+    .filter({ hasText: '김근태' })
+    .getByText('근무 중', { exact: true })
+    .waitFor();
+  checks.push('팀 날짜 빠른 변경 시 마지막 선택 날짜 유지');
+
   await page.getByRole('button', { name: '시각 변경 →' }).click();
   await page.locator('#demo-time').fill('2026-03-12T18:00');
   await page.getByRole('button', { name: '시각 적용' }).click();
@@ -211,6 +283,37 @@ try {
   if (await page.locator('#password').isVisible()) await login('김근태 팀원 · kim');
   await page.getByText('퇴근 완료', { exact: true }).waitFor();
   checks.push('앱 종료·재실행/저장된 오늘 상태 복원');
+  await page.route(apiPattern, (route) => route.abort());
+  await page.reload();
+  await page.getByRole('heading', { name: '연결을 확인해 주세요' }).waitFor();
+  await page.getByRole('button', { name: '로그인으로', exact: true }).click();
+  assert.equal(await page.evaluate(() => Boolean(sessionStorage.getItem('token'))), false);
+  await page.unroute(apiPattern);
+  await page.reload();
+  await page.locator('#password').waitFor();
+  assert.equal(await page.locator('.sidebar').count(), 0);
+  checks.push('연결 실패 후 로그인으로 이동/세션 제거/재로드 로그인 유지');
+  await login('개발 리드 리드 · lead');
+  const changeDay = async (value) => {
+    await page.getByRole('button', { name: '시각 변경 →' }).click();
+    await page.locator('#demo-time').fill(value);
+    await page.getByRole('button', { name: '시각 적용', exact: true }).click();
+    await page.getByRole('dialog').waitFor({ state: 'hidden' });
+  };
+  await changeDay('2026-03-16T12:30');
+  await logout();
+  await login('김근태 팀원 · kim');
+  assert.match(await page.locator('.work-guide').innerText(), /12:30부터 출근/);
+  await screenshot('morning-leave-guide');
+  await logout();
+  await login('개발 리드 리드 · lead');
+  await changeDay('2026-03-17T07:30');
+  await logout();
+  await login('김근태 팀원 · kim');
+  assert.match(await page.locator('.work-guide').innerText(), /11:30부터 퇴근/);
+  await screenshot('afternoon-leave-guide');
+  checks.push('승인된 오전·오후 반차의 오늘 근무 안내');
+
   assert.deepEqual(errors, []);
   writeFileSync(
     path.join(artifacts, 'report.json'),

@@ -44,7 +44,7 @@ window.addEventListener('auth-expired', () => {
   router.replace('/login');
 });
 watch(
-  () => [route.path, session.user],
+  () => [route.path, session.user, session.ready],
   () => {
     if (!session.ready) return;
     if (!session.user && route.path !== '/login') router.replace('/login');

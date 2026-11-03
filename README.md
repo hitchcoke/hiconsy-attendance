@@ -74,6 +74,8 @@ npm run dev
 
 승인 전에는 기존 근무 기준을 따릅니다. 이미 출근한 날이나 지난 날짜는 승인할 수 없으며 반려로 정리할 수 있습니다. 반환한 휴일 보상의 원래 만료일은 유지됩니다.
 
+[승인 목록 화면](docs/screenshots/approvals.png) · [팀원 처리 결과](docs/screenshots/requests-reviewed.png)
+
 리드 1명인 샘플 조직이므로 **리드 본인 휴가와 재택·휴일 근무 신청은 자동 확정**합니다. 이전 버전에서 확정된 신청도 승인 상태로 보존합니다.
 
 ## 연차와 반차
@@ -168,7 +170,7 @@ npm run format:check
 npm run test:ui          # 실제 Electron 시나리오, 3000 포트 비어 있어야 함
 ```
 
-UI 테스트는 임시 SQLite DB로 실행하고 종료 시 삭제합니다. 결과와 화면 캡처는 `artifacts/ui`에 남습니다. [검증 기록](docs/qa.md)을 확인하세요.
+UI 테스트는 임시 SQLite DB로 실행하고 종료 시 삭제합니다. 결과와 화면 캡처는 `artifacts/ui`에 남습니다. **[기능 테스트·버그 수정 결과](docs/testing.md)**에서 승인/반려 재현 절차, 서버 32개·Electron 16개 검증 결과를 확인하세요. 이전 검증 기록은 [QA 기록](docs/qa.md)에 남아 있습니다.
 
 ## 패키징
 
