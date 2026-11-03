@@ -10,7 +10,7 @@ const root = path.resolve(import.meta.dirname, '..');
 const temp = mkdtempSync(path.join(tmpdir(), 'hiconsy-ui-'));
 const artifacts = path.join(root, 'artifacts', process.env.ELECTRON_EXECUTABLE ? 'packaged' : 'ui');
 mkdirSync(artifacts, { recursive: true });
-const server = await createApp({ path: path.join(temp, 'test.sqlite'), demo: true });
+let server = await createApp({ path: path.join(temp, 'test.sqlite'), demo: true });
 let desktop;
 const checks = [];
 try {
@@ -20,7 +20,7 @@ try {
     args: process.env.ELECTRON_EXECUTABLE ? [] : [root],
     cwd: root,
   });
-  const page = await desktop.firstWindow();
+  let page = await desktop.firstWindow();
   page.setDefaultTimeout(8000);
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
@@ -136,6 +136,30 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   await screenshot('minimum-window');
   checks.push('최소 창 860×680 가로 넘침 없음');
+  await server.close();
+  await page.reload();
+  await page.getByRole('heading', { name: '연결을 확인해 주세요' }).waitFor();
+  server = await createApp({ path: path.join(temp, 'test.sqlite'), demo: true });
+  await server.app.listen(3000, '127.0.0.1');
+  await page.getByRole('button', { name: '다시 연결' }).click();
+  await page.locator('#password').waitFor();
+  await login('김근태 팀원 · kim');
+  await page.getByText('퇴근 완료', { exact: true }).waitFor();
+  assert.match(await page.locator('.balance-card').first().innerText(), /0일/);
+  checks.push('실제 서버 종료·재시작/재로그인/근태·잔여·시연 시각 보존');
+  await desktop.close();
+  desktop = await _electron.launch({
+    executablePath: process.env.ELECTRON_EXECUTABLE || require('electron'),
+    args: process.env.ELECTRON_EXECUTABLE ? [] : [root],
+    cwd: root,
+  });
+  page = await desktop.firstWindow();
+  page.setDefaultTimeout(8000);
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.locator('.balance-grid, #password').first().waitFor();
+  if (await page.locator('#password').isVisible()) await login('김근태 팀원 · kim');
+  await page.getByText('퇴근 완료', { exact: true }).waitFor();
+  checks.push('앱 종료·재실행/저장된 오늘 상태 복원');
   assert.deepEqual(errors, []);
   writeFileSync(
     path.join(artifacts, 'report.json'),
