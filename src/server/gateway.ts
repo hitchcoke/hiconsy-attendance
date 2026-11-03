@@ -15,7 +15,8 @@ export async function gateway<T>(p:Platform,req:Request,action:string,handler:(c
         if(!await p.allowed(m,ip,now,user.id)) fail('IP_DENIED','본인 신청의 IP·시간대에서 접속해 주세요.',403);
         if(lead&&user.role!=='LEAD') fail('FORBIDDEN','리드만 이용할 수 있습니다.',403);
         const value=await handler({user,now,ip,m});
-        await p.log(m,user.id,action,req.path,'SUCCESS','',now,ip);
+        const target=action.startsWith('ATTENDANCE_')&&value&&typeof value==='object'&&'id' in value?`attendance:${value.id}`:req.path;
+        await p.log(m,user.id,action,target,'SUCCESS','',now,ip);
         return value;
       });
     } catch(e) {
