@@ -3,7 +3,7 @@
 ## 데이터
 - users: id, login(unique), passwordHash, name, role(MEMBER/LEAD), hireDate.
 - attendances: id, userId(FK), workDate, checkIn, checkOut(nullable), workSeconds, late, early, manual, mode. unique(userId,workDate).
-- requests: id, userId(FK), kind(ANNUAL/HALF_AM/HALF_PM/REMOTE/HOLIDAY), date, reason, ip/startTime/endTime(nullable), createdAt. unique(userId,date). 모두 확정 상태.
+- requests: id, userId(FK), kind(ANNUAL/HALF_AM/HALF_PM/REMOTE/HOLIDAY), date, reason, ip/startTime/endTime(nullable), createdAt, status, reviewedBy, reviewedAt, reviewNote. 대기·승인 상태에만 unique(userId,date) 적용.
 - balance_entries: id, userId(FK), kind(ANNUAL/HOLIDAY), amount(+지급/-사용, 정수 1단위=0.5일), sourceKey(unique), grantId(nullable FK), requestId(nullable FK), grantedDate, expiresDate(nullable).
 - holidays: date(PK), name. 초기 목록의 지원 연도 밖 날짜는 명시적 오류.
 - audit_logs: id, actorId(nullable FK), action, target, result, code, at, ip. 요청 본문·비밀번호·토큰 저장 금지.

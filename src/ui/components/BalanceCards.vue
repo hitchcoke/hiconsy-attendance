@@ -10,7 +10,7 @@ const detail = ref(false);
       <span class="balance-icon purple">☀</span>
       <div>
         <small>남은 연차</small><strong>{{ value.annual }}<em>일</em></strong>
-        <p>예약 {{ value.reservedDays }}일 · 입사일 기준 적립</p>
+        <p>예약 {{ value.reservedDays }}일 제외 · 신청 가능</p>
       </div>
       <span class="card-arrow">↗</span></button
     ><button class="balance-card" @click="detail = true">
@@ -28,7 +28,7 @@ const detail = ref(false);
           {{
             value.expiring.length
               ? `${value.expiring[0].date} · ${value.expiring[0].days}일 만료 예정`
-              : '연차 1일 · 반차 0.5일'
+              : `승인 대기 ${value.pendingDays}일 · 승인 ${value.approvedDays}일`
           }}
         </p>
       </div>
@@ -44,7 +44,13 @@ const detail = ref(false);
         label="적립 구분"
         width="90"
         ><template #default="{ row }">{{
-          row.kind === 'ANNUAL' ? '월 적립' : '휴일 보상'
+          row.grantId
+            ? row.amount > 0
+              ? '반려 반환'
+              : '휴가 예약'
+            : row.kind === 'ANNUAL'
+              ? '월 적립'
+              : '휴일 보상'
         }}</template></el-table-column
       ><el-table-column label="일수" width="65"
         ><template #default="{ row }"

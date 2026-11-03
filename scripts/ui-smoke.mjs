@@ -7,6 +7,8 @@ const require = createRequire(import.meta.url);
 const { createApp } = require('../dist/server/app.js');
 const { _electron } = require('playwright');
 const root = path.resolve(import.meta.dirname, '..');
+const port = Number(process.env.UI_TEST_PORT || 3000);
+const apiPattern = `http://127.0.0.1:${port}/api/**`;
 const temp = mkdtempSync(path.join(tmpdir(), 'hiconsy-ui-'));
 const artifacts = path.join(root, 'artifacts', process.env.ELECTRON_EXECUTABLE ? 'packaged' : 'ui');
 mkdirSync(artifacts, { recursive: true });
@@ -14,7 +16,7 @@ let server = await createApp({ path: path.join(temp, 'test.sqlite'), demo: true 
 let desktop;
 const checks = [];
 try {
-  await server.app.listen(3000, '127.0.0.1');
+  await server.app.listen(port, '127.0.0.1');
   desktop = await _electron.launch({
     executablePath: process.env.ELECTRON_EXECUTABLE || require('electron'),
     args: process.env.ELECTRON_EXECUTABLE ? [] : [root],
@@ -60,7 +62,7 @@ try {
   await page.getByRole('button', { name: '새 신청', exact: true }).click();
   await page.locator('#request-date').fill('2026-03-13');
   await page.locator('#request-reason').fill('개인 일정으로 연차를 사용합니다.');
-  await page.getByRole('button', { name: '신청 확정', exact: true }).click();
+  await page.getByRole('button', { name: '승인 요청', exact: true }).click();
   await page.getByRole('cell', { name: '2026-03-13', exact: true }).waitFor();
   await page.getByRole('dialog').waitFor({ state: 'hidden' });
   await screenshot('requests');
@@ -68,7 +70,7 @@ try {
   await page.locator('.balance-card').first().click();
   await page.getByRole('heading', { name: '지급·사용 내역' }).waitFor();
   await page.getByRole('dialog').getByRole('button').first().click();
-  checks.push('연차 신청/예약 차감/지급사용 내역');
+  checks.push('연차 승인 요청/대기 상태/예약 차감/지급사용 내역');
   for (const [label, date] of [
     ['오전 반차 · 0.5일', '2026-03-16'],
     ['오후 반차 · 0.5일', '2026-03-17'],
@@ -79,7 +81,7 @@ try {
     await page.locator('#request-date').fill(date);
     await page.locator('#request-reason').fill(label);
     await screenshot(label.startsWith('오전') ? 'half-am-form' : 'half-pm-form');
-    await page.getByRole('button', { name: '신청 확정', exact: true }).click();
+    await page.getByRole('button', { name: '승인 요청', exact: true }).click();
     await page.getByRole('cell', { name: date, exact: true }).waitFor();
     await page.getByRole('dialog').waitFor({ state: 'hidden' });
   }
@@ -92,6 +94,55 @@ try {
 
   await logout();
   await login('개발 리드 리드 · lead');
+  await page.getByRole('link', { name: '휴가 승인', exact: true }).click();
+  await page.getByRole('tab', { name: '승인 대기 (3)', exact: true }).waitFor();
+  await screenshot('approvals-pending');
+  const reviewLeave = async (date, reject = false) => {
+    await page
+      .getByRole('row')
+      .filter({ hasText: date })
+      .getByRole('button', { name: '검토', exact: true })
+      .click();
+    await page.getByRole('dialog', { name: '휴가 신청 검토' }).waitFor();
+    if (reject) {
+      await page.getByRole('button', { name: '반려', exact: true }).click();
+      await page.getByRole('alert').filter({ hasText: '반려 사유를 입력해 주세요.' }).waitFor();
+      await page.locator('#review-note').fill('팀 일정 조정 후 다시 신청해 주세요.');
+      await screenshot('approval-reject');
+    }
+    await page.getByRole('button', { name: reject ? '반려' : '승인', exact: true }).click();
+    await page
+      .getByRole('button', { name: reject ? '반려 처리' : '승인 처리', exact: true })
+      .click();
+    await page.getByRole('dialog', { name: '휴가 신청 검토' }).waitFor({ state: 'hidden' });
+  };
+  await reviewLeave('2026-03-13');
+  await reviewLeave('2026-03-16', true);
+  await reviewLeave('2026-03-17');
+  await page.getByText('해당 상태의 휴가 신청이 없습니다.').waitFor();
+  await logout();
+  await login('김근태 팀원 · kim');
+  assert.match(await page.locator('.balance-card').first().innerText(), /0.5일/);
+  await page.getByRole('link', { name: '신청', exact: true }).click();
+  const rejected = page.getByRole('row').filter({ hasText: '2026-03-16' });
+  assert.match(await rejected.innerText(), /반려/);
+  assert.match(await rejected.innerText(), /팀 일정 조정 후 다시 신청/);
+  await screenshot('requests-reviewed');
+  await page.getByRole('button', { name: '새 신청', exact: true }).click();
+  await page.getByRole('dialog').getByText('오전 반차 · 0.5일', { exact: true }).click();
+  await page.locator('#request-date').fill('2026-03-16');
+  await page.locator('#request-reason').fill('일정 조정 후 재신청');
+  await page.getByRole('button', { name: '승인 요청', exact: true }).click();
+  await page.getByRole('dialog').waitFor({ state: 'hidden' });
+  assert.equal(await page.getByRole('row').filter({ hasText: '2026-03-16' }).count(), 2);
+  await logout();
+  await login('개발 리드 리드 · lead');
+  await page.getByRole('link', { name: '휴가 승인', exact: true }).click();
+  await page.getByRole('tab', { name: '승인 대기 (1)', exact: true }).waitFor();
+  await reviewLeave('2026-03-16');
+  await page.getByRole('tab', { name: '승인 (3)', exact: true }).click();
+  await screenshot('approvals-approved');
+  checks.push('승인 대기/리드 승인/반려 사유 검증/잔여 반환/같은 날 재신청/처리 결과');
   await page.getByRole('link', { name: '팀 현황', exact: true }).click();
   await page.locator('.team-stats').waitFor();
   await screenshot('team');
@@ -121,11 +172,11 @@ try {
   await screenshot('history');
   await page.getByRole('dialog').getByRole('button').first().click();
   checks.push('시연 시각/퇴근 취소 및 확정/8시간 계산/근태 상세');
-  await page.route('http://127.0.0.1:3000/api/**', (route) => route.abort());
+  await page.route(apiPattern, (route) => route.abort());
   await page.reload();
   await page.getByRole('heading', { name: '연결을 확인해 주세요' }).waitFor();
   await screenshot('connection-error');
-  await page.unroute('http://127.0.0.1:3000/api/**');
+  await page.unroute(apiPattern);
   await page.getByRole('button', { name: '다시 연결' }).click();
   await page.getByRole('link', { name: '오늘', exact: true }).click();
   await page.locator('.balance-grid').waitFor();
@@ -140,7 +191,7 @@ try {
   await page.reload();
   await page.getByRole('heading', { name: '연결을 확인해 주세요' }).waitFor();
   server = await createApp({ path: path.join(temp, 'test.sqlite'), demo: true });
-  await server.app.listen(3000, '127.0.0.1');
+  await server.app.listen(port, '127.0.0.1');
   await page.getByRole('button', { name: '다시 연결' }).click();
   await page.locator('#password').waitFor();
   await login('김근태 팀원 · kim');
