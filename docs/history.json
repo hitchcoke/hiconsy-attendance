@@ -1,0 +1,665 @@
+{
+  "generatedAt": "2026-11-03T07:06:39.649Z",
+  "repository": "https://github.com/hitchcoke/hiconsy-attendance",
+  "ref": "main",
+  "head": "dcd24f1dc69095a6880992580b0c1cd323a8bd21",
+  "tasks": [
+    {
+      "id": "T00",
+      "branches": [
+        {
+          "name": "task/T00-spec",
+          "sha": "5fda591d14b1b4b1cfccb275e3814b355baa3038"
+        }
+      ],
+      "commits": [
+        "5fda591d14b1b4b1cfccb275e3814b355baa3038"
+      ],
+      "merges": [
+        "68f0ef22762350bcb49b365f41f189018f88bef4"
+      ]
+    },
+    {
+      "id": "T01",
+      "branches": [
+        {
+          "name": "task/T01-contracts",
+          "sha": "72b4117dff86d1cd546d02e015d2eb85dfaf77f5"
+        }
+      ],
+      "commits": [
+        "72b4117dff86d1cd546d02e015d2eb85dfaf77f5"
+      ],
+      "merges": [
+        "f67f402edfa947df5ca2793f0736f8255abbfea1"
+      ]
+    },
+    {
+      "id": "T02",
+      "branches": [
+        {
+          "name": "task/T02-foundation",
+          "sha": "90baf9d150410cc953980dbb008b0e7f2e66d030"
+        }
+      ],
+      "commits": [
+        "90baf9d150410cc953980dbb008b0e7f2e66d030"
+      ],
+      "merges": [
+        "ebb2b5b55e09ee2167a293fd32c52902691b127f"
+      ]
+    },
+    {
+      "id": "T03",
+      "branches": [
+        {
+          "name": "task/T03-auth-shell",
+          "sha": "ae03b3c76ed83810ab574f17ef2793cc88777ba0"
+        }
+      ],
+      "commits": [
+        "ae03b3c76ed83810ab574f17ef2793cc88777ba0"
+      ],
+      "merges": [
+        "c2e2893d95c8b55233be456c874c5d37f6b8105e"
+      ]
+    },
+    {
+      "id": "T04",
+      "branches": [
+        {
+          "name": "task/T04-attendance",
+          "sha": "c0b4760078cb0bfa457d0189e3af14e00e363483"
+        }
+      ],
+      "commits": [
+        "c0b4760078cb0bfa457d0189e3af14e00e363483"
+      ],
+      "merges": [
+        "190185ea5464cdfa40fd85215d45a16550717f0d"
+      ]
+    },
+    {
+      "id": "T05",
+      "branches": [
+        {
+          "name": "task/T05-corrections",
+          "sha": "c638242a4aeea6c973f5e54b7007cb346e8833ae"
+        }
+      ],
+      "commits": [
+        "c638242a4aeea6c973f5e54b7007cb346e8833ae"
+      ],
+      "merges": [
+        "fc4adf355412f4c91623f423def9c91d1b33a201"
+      ]
+    },
+    {
+      "id": "T06",
+      "branches": [
+        {
+          "name": "task/T06-balances",
+          "sha": "1c8302f1a94984d5ddd3b780ca1f84cce922e496"
+        }
+      ],
+      "commits": [
+        "1c8302f1a94984d5ddd3b780ca1f84cce922e496"
+      ],
+      "merges": [
+        "30d3c1b351e21138e3047e273f8a538c1b19c293"
+      ]
+    },
+    {
+      "id": "T07",
+      "branches": [
+        {
+          "name": "task/T07-requests",
+          "sha": "cea4978231e0ebe8729d062c47404911a11c2da3"
+        }
+      ],
+      "commits": [
+        "cea4978231e0ebe8729d062c47404911a11c2da3"
+      ],
+      "merges": [
+        "ba5cf40d580087f6d76d77140e11fb76acecd3d8"
+      ]
+    },
+    {
+      "id": "T08",
+      "branches": [
+        {
+          "name": "task/T08-work-access",
+          "sha": "b81a39a3b7ccbfb5b870e736122fe6f002b46581"
+        }
+      ],
+      "commits": [
+        "b81a39a3b7ccbfb5b870e736122fe6f002b46581"
+      ],
+      "merges": [
+        "557fd9eb482976aa719c8f9b641b129758890423"
+      ]
+    },
+    {
+      "id": "T09",
+      "branches": [
+        {
+          "name": "task/T09-team",
+          "sha": "8f71579b7d3750ae4a5dad929f6b6fd809fa32a1"
+        }
+      ],
+      "commits": [
+        "8f71579b7d3750ae4a5dad929f6b6fd809fa32a1"
+      ],
+      "merges": [
+        "d3101b706e0d0ae0fe4e86fe53994f27660b97e4"
+      ]
+    },
+    {
+      "id": "T10",
+      "branches": [
+        {
+          "name": "task/T10-audit",
+          "sha": "e7ca1a31ebafb9569628cfa511123bb6947a3134"
+        }
+      ],
+      "commits": [
+        "e7ca1a31ebafb9569628cfa511123bb6947a3134"
+      ],
+      "merges": [
+        "1022eb640cea8bed8d334317af90ed7c07da0fd8"
+      ]
+    },
+    {
+      "id": "T11",
+      "branches": [
+        {
+          "name": "task/T11-demo",
+          "sha": "1f21f95c2f067d7d6bd68e8e65bc49d4b070a9d1"
+        }
+      ],
+      "commits": [
+        "1f21f95c2f067d7d6bd68e8e65bc49d4b070a9d1"
+      ],
+      "merges": [
+        "002c1493c91b190f810bda835460b6a6e08d2975"
+      ]
+    },
+    {
+      "id": "T12",
+      "branches": [
+        {
+          "name": "task/T12-ui-qa",
+          "sha": "0c7a4cb1289e2bf72c619f96706a6e9f16b0aaba"
+        }
+      ],
+      "commits": [
+        "0c7a4cb1289e2bf72c619f96706a6e9f16b0aaba"
+      ],
+      "merges": [
+        "ebc3956e9cc58cd2df4fe1e52d1d907020ceb8be"
+      ]
+    },
+    {
+      "id": "T13",
+      "branches": [
+        {
+          "name": "task/T13-packaging",
+          "sha": "b93f987927a5f5ac215b3bebfd4471148d4277c9"
+        }
+      ],
+      "commits": [
+        "b93f987927a5f5ac215b3bebfd4471148d4277c9"
+      ],
+      "merges": [
+        "dcd24f1dc69095a6880992580b0c1cd323a8bd21"
+      ]
+    },
+    {
+      "id": "T14",
+      "branches": [
+        {
+          "name": "task/T14-submission",
+          "sha": "dcd24f1dc69095a6880992580b0c1cd323a8bd21"
+        }
+      ],
+      "commits": [],
+      "merges": []
+    },
+    {
+      "id": "T15",
+      "branches": [
+        {
+          "name": "task/T15-half-day",
+          "sha": "2e15cd68a63fc65a69b0c42ba50494f81dff4888"
+        }
+      ],
+      "commits": [
+        "99bdf6452aa205b01f2b1f415e3121f95df79132",
+        "2e15cd68a63fc65a69b0c42ba50494f81dff4888"
+      ],
+      "merges": [
+        "a5f6a2c9f28e423acf97c9502465001523880976"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "name": "task/T00-spec",
+      "sha": "5fda591d14b1b4b1cfccb275e3814b355baa3038"
+    },
+    {
+      "name": "task/T01-contracts",
+      "sha": "72b4117dff86d1cd546d02e015d2eb85dfaf77f5"
+    },
+    {
+      "name": "task/T02-foundation",
+      "sha": "90baf9d150410cc953980dbb008b0e7f2e66d030"
+    },
+    {
+      "name": "task/T03-auth-shell",
+      "sha": "ae03b3c76ed83810ab574f17ef2793cc88777ba0"
+    },
+    {
+      "name": "task/T04-attendance",
+      "sha": "c0b4760078cb0bfa457d0189e3af14e00e363483"
+    },
+    {
+      "name": "task/T05-corrections",
+      "sha": "c638242a4aeea6c973f5e54b7007cb346e8833ae"
+    },
+    {
+      "name": "task/T06-balances",
+      "sha": "1c8302f1a94984d5ddd3b780ca1f84cce922e496"
+    },
+    {
+      "name": "task/T07-requests",
+      "sha": "cea4978231e0ebe8729d062c47404911a11c2da3"
+    },
+    {
+      "name": "task/T08-work-access",
+      "sha": "b81a39a3b7ccbfb5b870e736122fe6f002b46581"
+    },
+    {
+      "name": "task/T09-team",
+      "sha": "8f71579b7d3750ae4a5dad929f6b6fd809fa32a1"
+    },
+    {
+      "name": "task/T10-audit",
+      "sha": "e7ca1a31ebafb9569628cfa511123bb6947a3134"
+    },
+    {
+      "name": "task/T11-demo",
+      "sha": "1f21f95c2f067d7d6bd68e8e65bc49d4b070a9d1"
+    },
+    {
+      "name": "task/T12-ui-qa",
+      "sha": "0c7a4cb1289e2bf72c619f96706a6e9f16b0aaba"
+    },
+    {
+      "name": "task/T13-packaging",
+      "sha": "b93f987927a5f5ac215b3bebfd4471148d4277c9"
+    },
+    {
+      "name": "task/T14-submission",
+      "sha": "dcd24f1dc69095a6880992580b0c1cd323a8bd21"
+    },
+    {
+      "name": "task/T15-half-day",
+      "sha": "2e15cd68a63fc65a69b0c42ba50494f81dff4888"
+    }
+  ],
+  "commits": [
+    {
+      "sha": "6545e441ea9ba2584f1d549635c496bd6b92d37d",
+      "parents": [],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:15:53+09:00",
+      "subject": "chore: initialize attendance project",
+      "merge": false
+    },
+    {
+      "sha": "5fda591d14b1b4b1cfccb275e3814b355baa3038",
+      "parents": [
+        "6545e441ea9ba2584f1d549635c496bd6b92d37d"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:15:53+09:00",
+      "subject": "docs(T00): define screens, roles and fixed attendance rules",
+      "merge": false
+    },
+    {
+      "sha": "68f0ef22762350bcb49b365f41f189018f88bef4",
+      "parents": [
+        "6545e441ea9ba2584f1d549635c496bd6b92d37d",
+        "5fda591d14b1b4b1cfccb275e3814b355baa3038"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:15:53+09:00",
+      "subject": "merge(T00): requirements and screen specification",
+      "merge": true
+    },
+    {
+      "sha": "72b4117dff86d1cd546d02e015d2eb85dfaf77f5",
+      "parents": [
+        "68f0ef22762350bcb49b365f41f189018f88bef4"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:15:53+09:00",
+      "subject": "docs(T01): define database and API contracts",
+      "merge": false
+    },
+    {
+      "sha": "f67f402edfa947df5ca2793f0736f8255abbfea1",
+      "parents": [
+        "68f0ef22762350bcb49b365f41f189018f88bef4",
+        "72b4117dff86d1cd546d02e015d2eb85dfaf77f5"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:15:53+09:00",
+      "subject": "merge(T01): database and API contracts",
+      "merge": true
+    },
+    {
+      "sha": "90baf9d150410cc953980dbb008b0e7f2e66d030",
+      "parents": [
+        "f67f402edfa947df5ca2793f0736f8255abbfea1"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:18:18+09:00",
+      "subject": "feat(T02): scaffold Electron Vue app and NestJS SQLite server",
+      "merge": false
+    },
+    {
+      "sha": "ebb2b5b55e09ee2167a293fd32c52902691b127f",
+      "parents": [
+        "f67f402edfa947df5ca2793f0736f8255abbfea1",
+        "90baf9d150410cc953980dbb008b0e7f2e66d030"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:18:18+09:00",
+      "subject": "merge(T02): runnable desktop and persistence foundation",
+      "merge": true
+    },
+    {
+      "sha": "c171a898496decca919e8889634f16a3f9d584af",
+      "parents": [],
+      "author": "Jiwon Lee",
+      "date": "2026-11-03T15:17:33+09:00",
+      "subject": "Initial commit",
+      "merge": false
+    },
+    {
+      "sha": "4a3b174d54a04e7a2bda5a219b2abfe719bbaff5",
+      "parents": [
+        "ebb2b5b55e09ee2167a293fd32c52902691b127f",
+        "c171a898496decca919e8889634f16a3f9d584af"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:20:06+09:00",
+      "subject": "merge: preserve GitHub repository initial commit",
+      "merge": true
+    },
+    {
+      "sha": "ae03b3c76ed83810ab574f17ef2793cc88777ba0",
+      "parents": [
+        "4a3b174d54a04e7a2bda5a219b2abfe719bbaff5"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:21:00+09:00",
+      "subject": "feat(T03): add authenticated workspace and role-aware navigation",
+      "merge": false
+    },
+    {
+      "sha": "c2e2893d95c8b55233be456c874c5d37f6b8105e",
+      "parents": [
+        "4a3b174d54a04e7a2bda5a219b2abfe719bbaff5",
+        "ae03b3c76ed83810ab574f17ef2793cc88777ba0"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:21:00+09:00",
+      "subject": "merge(T03): authentication and user workspace",
+      "merge": true
+    },
+    {
+      "sha": "1c8302f1a94984d5ddd3b780ca1f84cce922e496",
+      "parents": [
+        "c2e2893d95c8b55233be456c874c5d37f6b8105e"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:22:13+09:00",
+      "subject": "feat(T06): implement balance ledger and remaining allowance cards",
+      "merge": false
+    },
+    {
+      "sha": "30d3c1b351e21138e3047e273f8a538c1b19c293",
+      "parents": [
+        "c2e2893d95c8b55233be456c874c5d37f6b8105e",
+        "1c8302f1a94984d5ddd3b780ca1f84cce922e496"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:22:13+09:00",
+      "subject": "merge(T06): annual leave and OFF balances",
+      "merge": true
+    },
+    {
+      "sha": "cea4978231e0ebe8729d062c47404911a11c2da3",
+      "parents": [
+        "30d3c1b351e21138e3047e273f8a538c1b19c293"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:23:29+09:00",
+      "subject": "feat(T07): add request forms and transactional allowance reservations",
+      "merge": false
+    },
+    {
+      "sha": "ba5cf40d580087f6d76d77140e11fb76acecd3d8",
+      "parents": [
+        "30d3c1b351e21138e3047e273f8a538c1b19c293",
+        "cea4978231e0ebe8729d062c47404911a11c2da3"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:23:29+09:00",
+      "subject": "merge(T07): leave and remote work requests",
+      "merge": true
+    },
+    {
+      "sha": "c0b4760078cb0bfa457d0189e3af14e00e363483",
+      "parents": [
+        "ba5cf40d580087f6d76d77140e11fb76acecd3d8"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:25:41+09:00",
+      "subject": "feat(T04): implement attendance actions and daily workspace",
+      "merge": false
+    },
+    {
+      "sha": "190185ea5464cdfa40fd85215d45a16550717f0d",
+      "parents": [
+        "ba5cf40d580087f6d76d77140e11fb76acecd3d8",
+        "c0b4760078cb0bfa457d0189e3af14e00e363483"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:25:41+09:00",
+      "subject": "merge(T04): check-in and check-out experience",
+      "merge": true
+    },
+    {
+      "sha": "c638242a4aeea6c973f5e54b7007cb346e8833ae",
+      "parents": [
+        "190185ea5464cdfa40fd85215d45a16550717f0d"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:27:19+09:00",
+      "subject": "feat(T05): add missing checkout correction and attendance history",
+      "merge": false
+    },
+    {
+      "sha": "fc4adf355412f4c91623f423def9c91d1b33a201",
+      "parents": [
+        "190185ea5464cdfa40fd85215d45a16550717f0d",
+        "c638242a4aeea6c973f5e54b7007cb346e8833ae"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:27:19+09:00",
+      "subject": "merge(T05): missing checkout recovery and personal records",
+      "merge": true
+    },
+    {
+      "sha": "b81a39a3b7ccbfb5b870e736122fe6f002b46581",
+      "parents": [
+        "fc4adf355412f4c91623f423def9c91d1b33a201"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:28:29+09:00",
+      "subject": "test(T08): verify work access and holiday OFF lifecycle",
+      "merge": false
+    },
+    {
+      "sha": "557fd9eb482976aa719c8f9b641b129758890423",
+      "parents": [
+        "fc4adf355412f4c91623f423def9c91d1b33a201",
+        "b81a39a3b7ccbfb5b870e736122fe6f002b46581"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:28:29+09:00",
+      "subject": "merge(T08): holiday and remote attendance integration",
+      "merge": true
+    },
+    {
+      "sha": "8f71579b7d3750ae4a5dad929f6b6fd809fa32a1",
+      "parents": [
+        "557fd9eb482976aa719c8f9b641b129758890423"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:29:19+09:00",
+      "subject": "feat(T09): add lead team board and member drill-down",
+      "merge": false
+    },
+    {
+      "sha": "d3101b706e0d0ae0fe4e86fe53994f27660b97e4",
+      "parents": [
+        "557fd9eb482976aa719c8f9b641b129758890423",
+        "8f71579b7d3750ae4a5dad929f6b6fd809fa32a1"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:29:19+09:00",
+      "subject": "merge(T09): lead team visibility",
+      "merge": true
+    },
+    {
+      "sha": "e7ca1a31ebafb9569628cfa511123bb6947a3134",
+      "parents": [
+        "d3101b706e0d0ae0fe4e86fe53994f27660b97e4"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:30:12+09:00",
+      "subject": "feat(T10): complete traceable audit events and readable activity labels",
+      "merge": false
+    },
+    {
+      "sha": "1022eb640cea8bed8d334317af90ed7c07da0fd8",
+      "parents": [
+        "d3101b706e0d0ae0fe4e86fe53994f27660b97e4",
+        "e7ca1a31ebafb9569628cfa511123bb6947a3134"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:30:12+09:00",
+      "subject": "merge(T10): success and failure activity history",
+      "merge": true
+    },
+    {
+      "sha": "1f21f95c2f067d7d6bd68e8e65bc49d4b070a9d1",
+      "parents": [
+        "1022eb640cea8bed8d334317af90ed7c07da0fd8"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:31:00+09:00",
+      "subject": "feat(T11): add persistent demo clock controls",
+      "merge": false
+    },
+    {
+      "sha": "002c1493c91b190f810bda835460b6a6e08d2975",
+      "parents": [
+        "1022eb640cea8bed8d334317af90ed7c07da0fd8",
+        "1f21f95c2f067d7d6bd68e8e65bc49d4b070a9d1"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:31:00+09:00",
+      "subject": "merge(T11): deterministic local demonstrations",
+      "merge": true
+    },
+    {
+      "sha": "0c7a4cb1289e2bf72c619f96706a6e9f16b0aaba",
+      "parents": [
+        "002c1493c91b190f810bda835460b6a6e08d2975"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:45:49+09:00",
+      "subject": "feat(T12): validate desktop flows and simplify interface copy",
+      "merge": false
+    },
+    {
+      "sha": "ebc3956e9cc58cd2df4fe1e52d1d907020ceb8be",
+      "parents": [
+        "002c1493c91b190f810bda835460b6a6e08d2975",
+        "0c7a4cb1289e2bf72c619f96706a6e9f16b0aaba"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:45:49+09:00",
+      "subject": "merge(T12): desktop usability and integration checks",
+      "merge": true
+    },
+    {
+      "sha": "99bdf6452aa205b01f2b1f415e3121f95df79132",
+      "parents": [
+        "ebc3956e9cc58cd2df4fe1e52d1d907020ceb8be"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:54:09+09:00",
+      "subject": "feat(T15): unify leave balance and enforce lunch-boundary half days",
+      "merge": false
+    },
+    {
+      "sha": "2e15cd68a63fc65a69b0c42ba50494f81dff4888",
+      "parents": [
+        "99bdf6452aa205b01f2b1f415e3121f95df79132"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:54:09+09:00",
+      "subject": "feat(T15): add morning and afternoon half-day selection",
+      "merge": false
+    },
+    {
+      "sha": "a5f6a2c9f28e423acf97c9502465001523880976",
+      "parents": [
+        "ebc3956e9cc58cd2df4fe1e52d1d907020ceb8be",
+        "2e15cd68a63fc65a69b0c42ba50494f81dff4888"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T15:54:10+09:00",
+      "subject": "merge(T15): unified annual leave with AM and PM half days",
+      "merge": true
+    },
+    {
+      "sha": "b93f987927a5f5ac215b3bebfd4471148d4277c9",
+      "parents": [
+        "a5f6a2c9f28e423acf97c9502465001523880976"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:04:42+09:00",
+      "subject": "feat(T13): package macOS app and verify restart recovery",
+      "merge": false
+    },
+    {
+      "sha": "dcd24f1dc69095a6880992580b0c1cd323a8bd21",
+      "parents": [
+        "a5f6a2c9f28e423acf97c9502465001523880976",
+        "b93f987927a5f5ac215b3bebfd4471148d4277c9"
+      ],
+      "author": "hitchcoke",
+      "date": "2026-11-03T16:04:42+09:00",
+      "subject": "merge(T13): verified macOS package and lifecycle",
+      "merge": true
+    }
+  ]
+}
