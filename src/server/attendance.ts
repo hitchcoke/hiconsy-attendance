@@ -1,8 +1,19 @@
 import { IsNull, LessThan } from 'typeorm';
 import type { Context } from './platform';
 import { Attendances, Requests } from './db';
-import { Calendar, at, dateOf, fail, workSeconds, RULES, DomainError } from './rules';
-import { balances, grantOff } from './balances';
+import {
+  Calendar,
+  at,
+  dateOf,
+  fail,
+  workSeconds,
+  RULES,
+  DomainError,
+  isHalfDay,
+  attendanceSeconds,
+  validateCheckoutTime,
+} from './rules';
+import { balances, grantHolidayLeave } from './balances';
 import type { Attendance, ActionState, Today, WorkRequest } from '../shared/contracts';
 export async function missing(c: Context) {
   return c.m.find(Attendances, {
@@ -37,7 +48,12 @@ export async function canCheckIn(c: Context, calendar: Calendar) {
   if ((await missing(c)).length)
     fail('MISSING_CHECKOUT', '이전 근무일의 퇴근 시각을 먼저 입력해 주세요.', 409);
   if (c.now < at(date, RULES.checkIn)) fail('TOO_EARLY', '출근 등록은 07:00부터 가능해요.');
-  return schedule(c, calendar, date, c.now);
+  const request = await schedule(c, calendar, date, c.now);
+  if (request?.kind === 'HALF_AM' && c.now < at(date, RULES.lunchEnd))
+    fail('MORNING_LEAVE', '오전 반차 사용일에는 12:30부터 출근할 수 있습니다.');
+  if (request?.kind === 'HALF_PM' && c.now >= at(date, RULES.lunchStart))
+    fail('AFTERNOON_LEAVE', '오후 반차 사용일에는 11:30 이전에 출근해야 합니다.');
+  return request;
 }
 export async function checkIn(c: Context, calendar: Calendar) {
   const req = await canCheckIn(c, calendar),
@@ -48,7 +64,7 @@ export async function checkIn(c: Context, calendar: Calendar) {
     checkIn: c.now.toISOString(),
     checkOut: null,
     workSeconds: 0,
-    late: c.now > at(date, RULES.late),
+    late: c.now > at(date, req?.kind === 'HALF_AM' ? RULES.lunchEnd : RULES.late),
     early: false,
     manual: false,
     mode: req?.kind || 'OFFICE',
@@ -59,8 +75,7 @@ export async function canCheckOut(c: Context, calendar: Calendar): Promise<Atten
     row = await c.m.findOneBy(Attendances, { userId: c.user.id, workDate: date });
   if (!row) fail('NOT_CHECKED_IN', '먼저 출근을 등록해 주세요.');
   if (row!.checkOut) fail('ALREADY_CHECKED_OUT', '오늘 퇴근을 이미 등록했어요.', 409);
-  if (row!.mode !== 'OFF' && c.now < at(date, RULES.checkOut))
-    fail('TOO_EARLY', '퇴근 등록은 16:00부터 가능해요.');
+  validateCheckoutTime(row!.mode, date, c.now);
   if (c.now <= new Date(row!.checkIn))
     fail('INVALID_CHECKOUT', '퇴근은 출근 시각 이후에 등록해 주세요.');
   await schedule(c, calendar, date, c.now);
@@ -68,11 +83,11 @@ export async function canCheckOut(c: Context, calendar: Calendar): Promise<Atten
 }
 export async function finish(c: Context, row: Attendance, end: Date, manual = false) {
   row.checkOut = end.toISOString();
-  row.workSeconds = workSeconds(row.checkIn, end);
-  row.early = row.workSeconds < (row.mode === 'OFF' ? RULES.offSeconds : RULES.normalSeconds);
+  row.workSeconds = attendanceSeconds(row.checkIn, end, row.mode);
+  row.early = row.workSeconds < (isHalfDay(row.mode) ? RULES.offSeconds : RULES.normalSeconds);
   row.manual = manual;
   await c.m.save(Attendances, row);
-  await grantOff(c, row);
+  await grantHolidayLeave(c, row);
   return row;
 }
 export async function checkOut(c: Context, calendar: Calendar) {
@@ -104,7 +119,7 @@ export async function today(c: Context, calendar: Calendar, demo: boolean): Prom
     workSeconds: attendance
       ? attendance.checkOut
         ? attendance.workSeconds
-        : workSeconds(attendance.checkIn, c.now)
+        : attendanceSeconds(attendance.checkIn, c.now, attendance.mode)
       : 0,
     holiday: !calendar.business(date),
   };

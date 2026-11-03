@@ -4,14 +4,14 @@ import request from 'supertest';
 import { createApp } from '../app';
 import { anniversary, workSeconds, at, Calendar } from '../rules';
 import { Entries, Users, publicUser } from '../db';
-import { grantOff, balances } from '../balances';
+import { grantHolidayLeave, balances } from '../balances';
 test('anniversary clamps without drifting; lunch requires entire interval', () => {
   assert.equal(anniversary('2026-01-31', 1), '2026-02-28');
   assert.equal(anniversary('2026-01-31', 2), '2026-03-31');
   assert.equal(workSeconds(at('2026-03-12', '09:00'), at('2026-03-12', '18:00')), 28800);
   assert.equal(workSeconds(at('2026-03-12', '12:00'), at('2026-03-12', '16:00')), 14400);
 });
-test('annual grants are idempotent and OFF expiry includes day 30', async () => {
+test('annual grants are idempotent and holiday credit expiry includes day 30', async () => {
   const a = await createApp({ path: ':memory:', demo: true, now: '2026-03-12T09:00:00+09:00' });
   try {
     const user = publicUser(await a.db.manager.findOneByOrFail(Users, { login: 'kim' }));
@@ -24,7 +24,7 @@ test('annual grants are idempotent and OFF expiry includes day 30', async () => 
     assert.equal((await balances(c)).annual, 2);
     assert.equal((await balances(c)).annual, 2);
     assert.equal(await a.db.manager.count(Entries), 2);
-    await grantOff(c, {
+    await grantHolidayLeave(c, {
       id: 999,
       userId: user.id,
       workDate: '2026-02-14',
@@ -36,8 +36,8 @@ test('annual grants are idempotent and OFF expiry includes day 30', async () => 
       manual: false,
       mode: 'HOLIDAY',
     });
-    assert.equal((await balances({ ...c, now: at('2026-03-16', '12:00') })).off, 1);
-    assert.equal((await balances({ ...c, now: at('2026-03-17', '00:00') })).off, 0);
+    assert.equal((await balances({ ...c, now: at('2026-03-16', '12:00') })).annual, 2.5);
+    assert.equal((await balances({ ...c, now: at('2026-03-17', '00:00') })).annual, 2);
   } finally {
     await a.close();
   }

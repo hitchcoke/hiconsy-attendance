@@ -1,7 +1,16 @@
 import { Between } from 'typeorm';
 import type { Context } from './platform';
 import { Attendances, Logs } from './db';
-import { Calendar, parseInstant, parseDate, dateOf, at, RULES, fail } from './rules';
+import {
+  Calendar,
+  parseInstant,
+  parseDate,
+  dateOf,
+  at,
+  RULES,
+  fail,
+  validateCheckoutTime,
+} from './rules';
 import { finish, schedule } from './attendance';
 export function positiveId(value: unknown): number {
   if (
@@ -46,8 +55,7 @@ export async function correct(c: Context, calendar: Calendar, id: number, value:
   const end = parseInstant(value);
   if (dateOf(end) !== row!.workDate || end <= new Date(row!.checkIn) || end >= c.now)
     fail('INVALID_CHECKOUT', '해당 근무일의 출근 이후, 현재 이전 시각을 입력해 주세요.');
-  if (row!.mode !== 'OFF' && end < at(row!.workDate, RULES.checkOut))
-    fail('TOO_EARLY', '퇴근 시각은 16:00 이후여야 합니다.');
+  validateCheckoutTime(row!.mode, row!.workDate, end);
   await schedule(c, calendar, row!.workDate, end, false);
   return finish(c, row!, end, true);
 }

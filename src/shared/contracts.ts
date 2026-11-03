@@ -1,5 +1,5 @@
 export type Role = 'MEMBER' | 'LEAD';
-export type RequestKind = 'ANNUAL' | 'REMOTE' | 'OFF' | 'HOLIDAY';
+export type RequestKind = 'ANNUAL' | 'HALF_AM' | 'HALF_PM' | 'REMOTE' | 'HOLIDAY';
 export interface User {
   id: number;
   login: string;
@@ -33,7 +33,7 @@ export interface Attendance {
 export interface BalanceEntry {
   id: number;
   userId: number;
-  kind: 'ANNUAL' | 'OFF';
+  kind: 'ANNUAL' | 'HOLIDAY';
   amount: number;
   sourceKey: string;
   grantId: number | null;
@@ -44,10 +44,8 @@ export interface BalanceEntry {
 export interface Balances {
   annual: number;
   remote: number;
-  off: number;
-  reservedAnnual: number;
-  reservedOff: number;
-  expiring: { date: string; count: number }[];
+  reservedDays: number;
+  expiring: { date: string; days: number }[];
   entries: BalanceEntry[];
 }
 export interface ClockInfo {

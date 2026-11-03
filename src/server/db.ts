@@ -100,7 +100,7 @@ const migrationSQL = [
   `CREATE INDEX audit_actor_at ON audit_logs(actorId,at)`,
   `CREATE TABLE app_settings(key TEXT PRIMARY KEY,value TEXT NOT NULL)`,
 ];
-class InitialSchema1760000000000 {
+export class InitialSchema1760000000000 {
   name = 'InitialSchema1760000000000';
   async up(runner: any) {
     for (const sql of migrationSQL) await runner.query(sql);
@@ -116,6 +116,32 @@ class InitialSchema1760000000000 {
       'users',
     ])
       await runner.query(`DROP TABLE ${table}`);
+  }
+}
+class UnifiedLeave1760000001000 {
+  name = 'UnifiedLeave1760000001000';
+  async up(runner: import('typeorm').QueryRunner) {
+    await runner.query('PRAGMA defer_foreign_keys = ON');
+    await runner.query('ALTER TABLE requests RENAME TO requests_legacy');
+    await runner.query(
+      `CREATE TABLE requests(id INTEGER PRIMARY KEY AUTOINCREMENT,userId INTEGER NOT NULL REFERENCES users(id),kind TEXT NOT NULL CHECK(kind IN ('ANNUAL','HALF_AM','HALF_PM','REMOTE','HOLIDAY')),date TEXT NOT NULL,reason TEXT NOT NULL,ip TEXT,startTime TEXT,endTime TEXT,createdAt TEXT NOT NULL,UNIQUE(userId,date))`,
+    );
+    await runner.query(
+      `INSERT INTO requests SELECT id,userId,CASE WHEN kind='OFF' THEN 'HALF_PM' ELSE kind END,date,reason,ip,startTime,endTime,createdAt FROM requests_legacy`,
+    );
+    await runner.query('ALTER TABLE balance_entries RENAME TO balance_entries_legacy');
+    await runner.query(
+      `CREATE TABLE balance_entries(id INTEGER PRIMARY KEY AUTOINCREMENT,userId INTEGER NOT NULL REFERENCES users(id),kind TEXT NOT NULL CHECK(kind IN ('ANNUAL','HOLIDAY')),amount INTEGER NOT NULL CHECK(amount IN (2,1,-1,-2)),sourceKey TEXT NOT NULL UNIQUE,grantId INTEGER REFERENCES balance_entries(id),requestId INTEGER REFERENCES requests(id),grantedDate TEXT NOT NULL,expiresDate TEXT)`,
+    );
+    await runner.query(
+      `INSERT INTO balance_entries SELECT id,userId,CASE WHEN kind='OFF' THEN 'HOLIDAY' ELSE kind END,amount*CASE WHEN kind='ANNUAL' THEN 2 ELSE 1 END,sourceKey,grantId,requestId,grantedDate,expiresDate FROM balance_entries_legacy ORDER BY id`,
+    );
+    await runner.query('DROP TABLE balance_entries_legacy');
+    await runner.query('DROP TABLE requests_legacy');
+    await runner.query(`UPDATE attendances SET mode='HALF_PM' WHERE mode='OFF'`);
+  }
+  async down() {
+    throw new Error('Half-day data cannot be losslessly downgraded. Restore a database backup.');
   }
 }
 export function hashPassword(password: string): string {
@@ -136,7 +162,7 @@ export async function createDatabase(path: string): Promise<DataSource> {
     type: 'better-sqlite3',
     database: path,
     entities: [Users, Attendances, Requests, Entries, Logs, Holidays, Settings],
-    migrations: [InitialSchema1760000000000],
+    migrations: [InitialSchema1760000000000, UnifiedLeave1760000001000],
     migrationsRun: true,
     synchronize: false,
     prepareDatabase: (raw) => {

@@ -57,7 +57,7 @@ test('temporary IP permits only its owner and exact window', async () => {
     await a.close();
   }
 });
-test('holiday correction grants one OFF; use day permits four hours before 16', async () => {
+test('holiday correction grants half-day credit; afternoon leave ends at lunch', async () => {
   const a = await createApp({ path: ':memory:', demo: true, now: '2026-03-13T16:00:00+09:00' });
   try {
     const h = request(a.app.getHttpServer());
@@ -94,11 +94,13 @@ test('holiday correction grants one OFF; use day permits four hours before 16', 
     await post(`attendance/${check.body.id}/correct`, {
       checkOut: '2026-03-14T16:00:00+09:00',
     }).expect(409);
-    assert.equal(await a.db.manager.countBy(Entries, { kind: 'OFF', amount: 1 }), 1);
-    await post('requests', { kind: 'OFF', date: '2026-03-17', reason: '오후 휴식' }).expect(201);
-    await set('2026-03-17T07:00:00');
+    assert.equal(await a.db.manager.countBy(Entries, { kind: 'HOLIDAY', amount: 1 }), 1);
+    await post('requests', { kind: 'HALF_PM', date: '2026-03-17', reason: '오후 휴식' }).expect(
+      201,
+    );
+    await set('2026-03-17T07:30:00');
     await post('attendance/check-in').expect(201);
-    await set('2026-03-17T11:00:00');
+    await set('2026-03-17T11:30:00');
     const out = await post('attendance/check-out').expect(201);
     assert.equal(out.body.workSeconds, 14400);
     assert.equal(out.body.early, false);
